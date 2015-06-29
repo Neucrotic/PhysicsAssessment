@@ -1,0 +1,68 @@
+﻿Build started 29/06/2015 3:38:50 PM.
+     1>Project "c:\Users\administrator\documents\visual studio 2013\Projects\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"c:\Users\administrator\documents\visual studio 2013\Projects\PhysXEngine\PhysXEngine\Dep\glfw\include\\" /I"c:\Users\administrator\documents\visual studio 2013\Projects\PhysXEngine\PhysXEngine\Dep\glm\\" /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\App.cpp Source\Camera\Camera.cpp Source\Camera\MobileCamera.cpp Source\Giz_core\Gizmos.cpp Source\main.cpp Source\PhysXApp.cpp
+         App.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(10): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(15): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+         Camera.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\camera\Camera.h(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Camera\Camera.cpp(18): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Camera\Camera.cpp(19): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Camera\Camera.cpp(24): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Camera\Camera.cpp(44): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+         MobileCamera.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\camera\Camera.h(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Camera\MobileCamera.cpp(17): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>Source\Camera\MobileCamera.cpp(18): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>Source\Camera\MobileCamera.cpp(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>Source\Camera\MobileCamera.cpp(124): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>Source\Camera\MobileCamera.cpp(124): error C2660: 'glm::cross' : function does not take 1 arguments
+     1>Source\Camera\MobileCamera.cpp(124): error C2661: 'glm::tvec4<float,0>::tvec4' : no overloaded function takes 2 arguments
+     1>Source\Camera\MobileCamera.cpp(126): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>Source\Camera\MobileCamera.cpp(126): error C2660: 'glm::cross' : function does not take 1 arguments
+     1>Source\Camera\MobileCamera.cpp(126): error C2661: 'glm::tvec4<float,0>::tvec4' : no overloaded function takes 2 arguments
+         Gizmos.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>Source\Giz_core\Gizmos.cpp(11): warning C4316: 'Gizmos::GizmoLine' : object allocated on the heap may not be aligned 16
+     1>Source\Giz_core\Gizmos.cpp(14): warning C4316: 'Gizmos::GizmoTri' : object allocated on the heap may not be aligned 16
+     1>Source\Giz_core\Gizmos.cpp(16): warning C4316: 'Gizmos::GizmoTri' : object allocated on the heap may not be aligned 16
+     1>Source\Giz_core\Gizmos.cpp(19): warning C4316: 'Gizmos::GizmoLine' : object allocated on the heap may not be aligned 16
+     1>Source\Giz_core\Gizmos.cpp(22): warning C4316: 'Gizmos::GizmoTri' : object allocated on the heap may not be aligned 16
+         main.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(10): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(15): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+         PhysXApp.cpp
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(10): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(15): error C2719: '_transform': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\source\Camera\Camera.h(19): error C2039: 'xyz' : is not a member of 'glm::tvec4<float,0>'
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(85): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'rh': formal parameter with __declspec(align('16')) won't be aligned
+     1>c:\users\administrator\documents\visual studio 2013\projects\physxengine\physxengine\dep\glm\glm\./gtx/scalar_multiplication.hpp(95): error C2719: 'lh': formal parameter with __declspec(align('16')) won't be aligned
+     1>Done Building Project "c:\Users\administrator\documents\visual studio 2013\Projects\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:03.01
