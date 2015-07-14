@@ -15,10 +15,10 @@ public:
 
 	ShapeType m_shapeID;
 
-	virtual void Update(glm::vec3 _gracity, float _timeStep) = 0;
+	virtual void Update(glm::vec2 _gravity, float _timeStep) = 0;
 	virtual void Debug() = 0; //use to print debug information to the console
 	virtual void MakeGizmo() = 0;
-	virtual void ResetPosition();
+	void ResetPosition();
 
 private:
 

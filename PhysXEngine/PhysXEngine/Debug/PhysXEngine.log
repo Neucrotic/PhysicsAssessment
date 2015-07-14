@@ -1,4 +1,4 @@
-﻿Build started 13/07/2015 4:26:15 PM.
+﻿Build started 14/07/2015 4:48:51 PM.
      1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glfw\include\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glm\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\PhysXApp.cpp Source\main.cpp
@@ -11,4 +11,4 @@
 
 Build FAILED.
 
-Time Elapsed 00:00:07.04
+Time Elapsed 00:00:06.57
