@@ -36,7 +36,7 @@ void PhysicsScene::Update()
 {
 	for (auto i = m_actors.begin(); i < m_actors.end(); i++)
 	{
-		m_actors.at[i]->Update(m_gravity, m_timeStep);
+		m_actors[i]->Update(m_gravity, m_timeStep);
 	}
 }
 
