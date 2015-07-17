@@ -10,6 +10,8 @@ Sphere::Sphere(glm::vec3 _position, glm::vec3 _velocity, float _mass, float _rad
 	m_radius = _radius;
 
 	m_colour = _colour;
+
+	m_shapeID = SPHERE;
 }
 
 void Sphere::MakeGizmo()

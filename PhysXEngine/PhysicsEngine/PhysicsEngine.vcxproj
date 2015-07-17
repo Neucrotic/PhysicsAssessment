@@ -83,13 +83,16 @@
     <ClCompile Include="Source\App.cpp" />
     <ClCompile Include="Source\Camera\Camera.cpp" />
     <ClCompile Include="Source\Camera\MobileCamera.cpp" />
+    <ClCompile Include="Source\PhysicsObject.cpp" />
+    <ClCompile Include="Source\Plane.cpp" />
     <ClCompile Include="Source\RigidBody.cpp" />
     <ClCompile Include="Source\Sphere.cpp" />
     <ClCompile Include="Source\Giz_core\Gizmos.cpp" />
     <ClCompile Include="Source\Giz_core\gl_core_4_4.c" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\PhysicsScene.cpp" />
-    <ClCompile Include="Source\NewtonsThirdLaw.cpp" />
+    <ClCompile Include="Source\TutNewtonsThirdLaw.cpp" />
+    <ClCompile Include="Source\TutCollisionDetection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
@@ -99,9 +102,11 @@
     <ClInclude Include="Source\Giz_core\gl_core_4_4.h" />
     <ClInclude Include="Source\PhysicsObject.h" />
     <ClInclude Include="Source\PhysicsScene.h" />
+    <ClInclude Include="Source\Plane.h" />
     <ClInclude Include="Source\RigidBody.h" />
     <ClInclude Include="Source\Sphere.h" />
-    <ClInclude Include="Source\NewtonsThirdLaw.h" />
+    <ClInclude Include="Source\TutNewtonsThirdLaw.h" />
+    <ClInclude Include="Source\TutCollisionDetection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

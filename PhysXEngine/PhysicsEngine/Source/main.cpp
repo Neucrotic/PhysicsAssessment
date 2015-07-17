@@ -1,9 +1,10 @@
 #include <iostream> 
-#include "NewtonsThirdLaw.h"
+#include "TutNewtonsThirdLaw.h"
+#include "TutCollisionDetection.h"
 
 int main(int argc, char** argv)
 {
-	App* app = new NewtonsThirdLaw();
+	App* app = new TutCollisionDetection();
 	app->Run();
 
 	return 0;
