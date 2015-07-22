@@ -1,8 +1,13 @@
 #include "PhysXApp.h"
+#include "Camera\MobileCamera.h"
 
 void PhysXApp::Startup()
 {
-
+	MobileCamera* camera = new MobileCamera(50.0f, 0.1f);
+	camera->SetInputWindow(window);
+	camera->SetupPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 10000.0f);
+	camera->LookAt(glm::vec3(0, 1, 40), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	m_camera = camera;
 
 	SetUpPhysX();
 	SetUpVisualDebugger();
@@ -19,7 +24,7 @@ void PhysXApp::Shutdown()
 
 bool PhysXApp::Update(double _dt)
 {
-	//m_camera->Update(_dt);
+	m_camera->Update(_dt);
 	UpdatePhysX(_dt);
 
 
@@ -29,7 +34,7 @@ bool PhysXApp::Update(double _dt)
 
 void PhysXApp::Render()
 {
-
+	Gizmos::addTransform(glm::mat4(1));
 }
 
 void PhysXApp::SetUpPhysX()
@@ -64,6 +69,19 @@ void PhysXApp::UpdatePhysX(double _dt)
 	{
 
 	}
+
+	for (auto actor : physxActors)
+	{
+		PxU32 numShapes = actor->getNbShapes();
+		PxShape** shapes = new PxShape*[numShapes];
+		actor->getShapes(shapes, numShapes);
+
+		while (numShapes--)
+		{
+			AddWidget(shapes[numShapes], actor);
+		}
+		delete[] shapes;
+	}
 }
 
 void PhysXApp::SetUpVisualDebugger()
@@ -88,6 +106,58 @@ void PhysXApp::SetUpVisualDebugger()
 	auto theConnection = PxVisualDebuggerExt::createConnection(g_Physics->getPvdConnectionManager(), pvd_host_ip, port, timeout, connectionFlags);
 }
 
+void PhysXApp::AddWidget(PxShape* _shape, PxRigidActor* _actor)
+{
+	PxGeometryType::Enum type = _shape->getGeometryType();
+
+	switch (type)
+	{
+	case PxGeometryType::eBOX:
+		AddBox(_shape, _actor);
+		break;
+	}
+}
+
+void PhysXApp::AddBox(PxShape* _shape, PxRigidActor* _actor)
+{
+	PxBoxGeometry geometry;
+	float width = 1;
+	float height = 1;
+	float length = 1;
+
+	bool status = _shape->getBoxGeometry(geometry);
+	
+	if (status)
+	{
+		width = geometry.halfExtents.x;
+		height = geometry.halfExtents.y;
+		length = geometry.halfExtents.z;
+
+		PxMat44 m(PxShapeExt::getGlobalPose(*_shape, *_actor));
+
+		glm::mat4 M(m.column0.x, m.column0.y, m.column0.z, m.column0.w,
+					m.column1.x, m.column1.y, m.column1.z, m.column1.w,
+					m.column2.x, m.column2.y, m.column2.z, m.column2.w,
+					m.column3.x, m.column3.y, m.column3.z, m.column3.w);
+
+		glm::vec3 position;
+
+		position.x = m.getPosition().x;
+		position.y = m.getPosition().y;
+		position.z = m.getPosition().z;
+
+		glm::vec3 extents = glm::vec3(width, height, length);
+		glm::vec4 colour = glm::vec4(1, 0, 0, 1);
+
+		if (_actor->getName() != NULL && strcmp(_actor->getName(), "Pickup1"))
+		{
+			colour = glm::vec4(0, 1, 0, 1);
+		}
+
+		Gizmos::addAABBFilled(position, extents, colour, &M);
+	}
+}
+
 void PhysXApp::SetupTutorial1()
 {
 	//add a plane
@@ -105,4 +175,5 @@ void PhysXApp::SetupTutorial1()
 
 	//add the box to the physX scene
 	g_PhysicsScene->addActor(*dynamicActor);
+	physxActors.push_back(dynamicActor);
 }

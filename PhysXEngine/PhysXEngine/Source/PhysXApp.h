@@ -3,6 +3,7 @@
 #include <PxPhysicsAPI.h>
 #include <PxScene.h>
 #include <pvd\PxVisualDebugger.h>
+#include <vector>
 
 using namespace physx;
 
@@ -18,6 +19,10 @@ public:
 
 private:
 
+	//List of scenes Actors
+	std::vector<PxRigidBody*> physxActors;
+
+	//PhysX specific
 	PxFoundation* g_PhysicsFoundation;
 	PxPhysics* g_Physics;
 	PxScene* g_PhysicsScene;
@@ -32,6 +37,9 @@ private:
 	void SetUpPhysX();
 	void UpdatePhysX(double _dt);
 	void SetUpVisualDebugger();
+
+	void AddWidget(PxShape* _shape, PxRigidActor* _actor);
+	void AddBox(PxShape* _shape, PxRigidActor* _actor);
 
 	//tutorial setup functions
 	void SetupTutorial1();

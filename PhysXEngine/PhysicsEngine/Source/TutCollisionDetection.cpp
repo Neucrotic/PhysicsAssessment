@@ -13,12 +13,12 @@ void TutCollisionDetection::Startup()
 	camera->LookAt(glm::vec3(0, 1, 40), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	m_camera = camera;
 
-	m_physicsScene = new PhysicsScene(glm::vec2(0, 0), 0.001f);
+	m_physicsScene = new PhysicsScene(glm::vec2(0, -10), 0.001f);
 
 	m_myPlane = new Plane();
 
-	m_mySphereA = new Sphere(glm::vec3(5, 0, 0), glm::vec3(-15, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
-	m_mySphereB = new Sphere(glm::vec3(-5, 0, 0), glm::vec3(15, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
+	m_mySphereA = new Sphere(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
+	m_mySphereB = new Sphere(glm::vec3(0, 10, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
 
 	m_physicsScene->AddActor(m_myPlane);
 	m_physicsScene->AddActor(m_mySphereA);

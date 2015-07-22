@@ -106,7 +106,7 @@ bool PhysicsScene::PlaneToPlane(PhysicsObject* _planeA, PhysicsObject* _planeB)
 
 bool PhysicsScene::PlaneToSphere(PhysicsObject* _plane, PhysicsObject* _sphere)
 {
-
+	return SphereToPlane(_sphere, _plane);
 
 	return false;
 }
@@ -127,18 +127,18 @@ bool PhysicsScene::SphereToPlane(PhysicsObject* _sphere, PhysicsObject* _plane)
 	float sphereToPlane = glm::dot(sphere->m_position, plane->m_normal) - plane->m_distanceFromOrigin;
 
 	//if behind the plane, flip the normal
-	if (sphereToPlane < 0)
-	{
-		collisionNormal *= -1;
-		sphereToPlane *= -1;
-	}
+	//if (sphereToPlane < 0)
+	//{
+	//	collisionNormal *= -1;
+	//	sphereToPlane *= -1;
+	//}
 
 	float intersection = sphere->m_radius - sphereToPlane;
 
 	if (intersection > 0)
 	{
 		sphere->m_velocity = glm::vec3(0);
-
+		sphere->m_position += intersection * collisionNormal;
 		return true;
 	}
 
@@ -152,12 +152,20 @@ bool PhysicsScene::SphereToSphere(PhysicsObject* _sphereA, PhysicsObject* _spher
 
 	if (sphereA != NULL && sphereB != NULL)
 	{
-		float distance = glm::vec3(sphereA->m_position - sphereB->m_position).length();
+		glm::vec3 collisionNormal = sphereA->m_position - sphereB->m_position;
+		float distance = glm::length(collisionNormal);
+		collisionNormal = glm::normalize(collisionNormal);
 
 		if (distance < (sphereA->m_radius + sphereB->m_radius))
 		{
 			sphereA->m_velocity = glm::vec3(0);
 			sphereB->m_velocity = glm::vec3(0);
+
+			float fIntersecDist = (sphereA->m_radius + sphereB->m_radius) - distance;
+
+			sphereA->m_position += fIntersecDist * collisionNormal;
+			sphereB->m_position -= fIntersecDist * collisionNormal;
+
 
 			return true;
 		}		

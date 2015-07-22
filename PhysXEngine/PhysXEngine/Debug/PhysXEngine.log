@@ -1,14 +1,19 @@
-﻿Build started 17/07/2015 3:06:51 PM.
-     1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" on node 2 (Build target(s)).
+﻿Build started 22/07/2015 7:06:37 PM.
+     1>Project "C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glfw\include\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glm\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\PhysXApp.cpp Source\main.cpp
-         main.cpp
-     1>c:\users\nelson.hain\documents\physicsassessment\physxengine\physxengine\source\physxapp.h(3): fatal error C1083: Cannot open include file: 'PxPhysicsAPI.h': No such file or directory
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glfw\include\ /IC:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glm\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\PhysXApp.cpp
          PhysXApp.cpp
-     1>c:\users\nelson.hain\documents\physicsassessment\physxengine\physxengine\source\physxapp.h(3): fatal error C1083: Cannot open include file: 'PxPhysicsAPI.h': No such file or directory
-         Generating Code...
-     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" (Build target(s)) -- FAILED.
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysXEngin.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\Dep\glfw\lib-vc2013\\" opengl32.lib glfw3.lib PhysX3DEBUG_x86.lib PhysX3ExtensionsDEBUG.lib PhysX3CommonDEBUG_x86.lib PhysX3VehicleDEBUG.lib PhysX3CharacterKinematicDEBUG_x86.lib PhysX3CookingDEBUG_x86.lib PhysXVisualDebuggerSDKDEBUG.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysXEngin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysXEngin.lib" /MACHINE:X86 Debug\App.obj
+         Debug\Camera.obj
+         Debug\MobileCamera.obj
+         Debug\Gizmos.obj
+         Debug\gl_core_4_4.obj
+         Debug\main.obj
+         Debug\PhysXApp.obj
+         PhysXEngine.vcxproj -> C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysXEngin.exe
+     1>Done Building Project "C:\Users\TEMP\Documents\PhysicsAssessment\PhysXEngine\PhysXEngine\PhysXEngine.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:06.09
+Time Elapsed 00:00:04.48
