@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "PhysicsObject.h"
 #include "Plane.h"
+#include "Box.h"
 
 void TutCollisionDetection::Startup()
 {
@@ -20,9 +21,14 @@ void TutCollisionDetection::Startup()
 	m_mySphereA = new Sphere(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
 	m_mySphereB = new Sphere(glm::vec3(0, 10, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1));
 
-	m_physicsScene->AddActor(m_myPlane);
-	m_physicsScene->AddActor(m_mySphereA);
-	m_physicsScene->AddActor(m_mySphereB);
+	m_myBoxA = new Box(glm::vec3(5, 2, 0), glm::vec3(0, 0, 0), 1.0f, glm::vec3(1, 1, 1), glm::vec4(0, 0, 1, 1));
+	m_myBoxB = new Box(glm::vec3(0), glm::vec3(0), 4.0f, glm::vec3(1, 1, 1), glm::vec4(1, 0, 0, 1));
+
+	//m_physicsScene->AddActor(m_myPlane);
+	//m_physicsScene->AddActor(m_mySphereA);
+	//m_physicsScene->AddActor(m_mySphereB);
+	m_physicsScene->AddActor(m_myBoxA);
+	m_physicsScene->AddActor(m_myBoxB);
 }
 
 void TutCollisionDetection::Shutdown()

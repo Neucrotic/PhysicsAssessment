@@ -1,10 +1,11 @@
 #include "PhysicsScene.h"
 #include "glm\glm.hpp"
-#include <cmath>
+//#include <cmath>
 
 #include "PhysicsObject.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "Box.h"
 
 PhysicsScene::PhysicsScene()
 {
@@ -161,10 +162,10 @@ bool PhysicsScene::SphereToSphere(PhysicsObject* _sphereA, PhysicsObject* _spher
 			sphereA->m_velocity = glm::vec3(0);
 			sphereB->m_velocity = glm::vec3(0);
 
-			float fIntersecDist = (sphereA->m_radius + sphereB->m_radius) - distance;
+			float intersecDist = (sphereA->m_radius + sphereB->m_radius) - distance;
 
-			sphereA->m_position += fIntersecDist * collisionNormal;
-			sphereB->m_position -= fIntersecDist * collisionNormal;
+			sphereA->m_position += intersecDist * collisionNormal;
+			sphereB->m_position -= intersecDist * collisionNormal;
 
 
 			return true;
@@ -183,7 +184,7 @@ bool PhysicsScene::SphereToBox(PhysicsObject* _sphere, PhysicsObject* _box)
 //BOX
 bool PhysicsScene::BoxToPlane(PhysicsObject* _box, PhysicsObject* _plane)
 {
-
+	
 
 	return false;
 }
@@ -197,7 +198,130 @@ bool PhysicsScene::BoxToSphere(PhysicsObject* _box, PhysicsObject* _sphere)
 
 bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 {
+	Box* box1 = dynamic_cast<Box*>(_boxA);
+	Box* box2 = dynamic_cast<Box*>(_boxB);
 
+	glm::vec3 intersectionPoint;
+
+	if (box1 != NULL && box2 != NULL)
+	{
+		box1->SetMinMaxExtents();
+		box2->SetMinMaxExtents();
+
+		if (box1->m_min.x < box2->m_max.x && box1->m_max.x > box2->m_min.x)
+		{
+			float intersectX1 = box1->m_max.x - box2->m_min.x;
+			float intersectX2 = box2->m_max.x - box1->m_min.x;
+			
+			if (glm::abs(intersectX1) > glm::abs(intersectX2))
+			{
+				intersectionPoint.x = intersectX1;
+			}
+			else
+			{
+				intersectionPoint.x = intersectX2;
+			}
+			
+			if (box1->m_min.y < box2->m_max.y && box1->m_max.y > box2->m_min.y)
+			{
+				float intersectY1 = box2->m_max.y - box1->m_min.y;
+				float intersectY2 = box1->m_max.y - box2->m_min.y;
+				
+				if (glm::abs(intersectY1) > glm::abs(intersectY2))
+				{
+					intersectionPoint.y = intersectY1;
+				}
+				else
+				{
+					intersectionPoint.y = intersectY2;
+				}
+
+				if (box1->m_min.z < box2->m_max.z && box1->m_max.z > box2->m_min.z)
+				{
+					float intersectZ1 = box2->m_max.z - box1->m_min.z;
+					float intersectZ2 = box1->m_max.z - box2->m_min.z;
+
+					if (glm::abs(intersectZ1) > glm::abs(intersectZ2))
+					{
+						intersectionPoint.z = intersectZ1;
+					}
+					else
+					{
+						intersectionPoint.z = intersectZ2;
+					}
+				}
+			}
+			
+			//adjust position on smallest axis
+			glm::vec3 intersectionAxis(GetSmallestAxis(intersectionPoint));
+
+			//box 1 = x, box 2 = y
+			glm::vec2 bounceBack = GetAABBMoveRatio(box1, box2);
+
+			if (intersectionAxis.x != 0)
+			{
+				box1->m_transform[3].x += bounceBack.x;
+				box2->m_transform[3].x += bounceBack.y;
+			}
+			else if (intersectionAxis.y != 0)
+			{
+				box1->m_transform[3].y += bounceBack.x;
+				box2->m_transform[3].y += bounceBack.y;
+			}
+			else if (intersectionAxis.z != 0)
+			{
+				box1->m_transform[3].z += bounceBack.x;
+				box2->m_transform[3].z += bounceBack.y;
+			}
+
+			box1->m_velocity = glm::vec3(0);
+			box2->m_velocity = glm::vec3(0);
+
+			return true;
+		}		
+	}		
 
 	return false;
+}
+
+glm::vec3 PhysicsScene::GetSmallestAxis(glm::vec3 &_vec)
+{
+	if (_vec.x < _vec.y)
+	{
+		if (_vec.x < _vec.z)
+		{
+			_vec.y = 0; 
+			_vec.z = 0;
+			return _vec;
+		}
+		else
+		{
+			_vec.x = 0;
+			_vec.y = 0;
+			return _vec;
+		}
+	}
+	else
+	{
+		if (_vec.y < _vec.z)
+		{
+			_vec.x = 0;
+			_vec.z = 0;
+			return _vec;
+		}
+		else
+		{
+			_vec.x = 0;
+			_vec.y = 0;
+			return _vec;
+		}
+	}
+}
+
+glm::vec2 PhysicsScene::GetAABBMoveRatio(Box* _boxX, Box* _boxY)
+{
+	float moveRatioA = 1 - (_boxX->m_mass / (_boxX->m_mass + _boxY->m_mass));
+	float moveRatioB = 1 - (_boxY->m_mass / (_boxX->m_mass + _boxY->m_mass));
+
+	return glm::vec2(moveRatioA, moveRatioB);
 }

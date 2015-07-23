@@ -13,6 +13,8 @@ void PhysXApp::Startup()
 	SetUpVisualDebugger();
 
 	SetupTutorial1();
+
+	keyCD = 0.15f;
 }
 
 void PhysXApp::Shutdown()
@@ -27,7 +29,18 @@ bool PhysXApp::Update(double _dt)
 	m_camera->Update(_dt);
 	UpdatePhysX(_dt);
 
+	if (keyCD <= 0)
+	{
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		{
+			FireSphere(m_camera->GetTransform());
+		}
 
+		keyCD = 0.15f;
+	}
+
+
+	keyCD -= _dt;
 
 	return true;
 }
@@ -115,6 +128,9 @@ void PhysXApp::AddWidget(PxShape* _shape, PxRigidActor* _actor)
 	case PxGeometryType::eBOX:
 		AddBox(_shape, _actor);
 		break;
+	case PxGeometryType::eSPHERE:
+		AddSphere(_shape, _actor);
+		break;
 	}
 }
 
@@ -140,6 +156,8 @@ void PhysXApp::AddBox(PxShape* _shape, PxRigidActor* _actor)
 					m.column2.x, m.column2.y, m.column2.z, m.column2.w,
 					m.column3.x, m.column3.y, m.column3.z, m.column3.w);
 
+		M = glm::transpose(M);
+
 		glm::vec3 position;
 
 		position.x = m.getPosition().x;
@@ -158,6 +176,91 @@ void PhysXApp::AddBox(PxShape* _shape, PxRigidActor* _actor)
 	}
 }
 
+void PhysXApp::AddSphere(PxShape* _shape, PxRigidActor* _actor)
+{
+	PxSphereGeometry geometry;
+	
+	float radius = 1;
+
+	bool status = _shape->getSphereGeometry(geometry);
+
+	if (status)
+	{
+		radius = geometry.radius;
+	}
+
+	PxMat44 m(PxShapeExt::getGlobalPose(*_shape, *_actor));
+
+	glm::mat4 M(m.column0.x, m.column0.y, m.column0.z, m.column0.w,
+				m.column1.x, m.column1.y, m.column1.z, m.column1.w,
+				m.column2.x, m.column2.y, m.column2.z, m.column2.w,
+				m.column3.x, m.column3.y, m.column3.z, m.column3.w);
+
+	M = glm::transpose(M);
+
+	glm::vec3 position;
+
+	position.x = m.getPosition().x;
+	position.y = m.getPosition().y;
+	position.z = m.getPosition().z;
+
+	glm::vec4 colour = glm::vec4(0, 0, 1, 1);
+
+	Gizmos::addSphere(position, radius, (radius * 10), (radius * 10), colour, &M);
+}
+
+void AddSphere(PxShape* _shape, PxRigidActor* _actor, glm::vec3 _startPos)
+{
+	PxSphereGeometry geometry;
+
+	float radius = 1;
+
+	bool status = _shape->getSphereGeometry(geometry);
+
+	if (status)
+	{
+		radius = geometry.radius;
+	}
+
+	PxMat44 m(PxShapeExt::getGlobalPose(*_shape, *_actor));
+
+	glm::mat4 M(m.column0.x, m.column0.y, m.column0.z, m.column0.w,
+		m.column1.x, m.column1.y, m.column1.z, m.column1.w,
+		m.column2.x, m.column2.y, m.column2.z, m.column2.w,
+		m.column3.x, m.column3.y, m.column3.z, m.column3.w);
+
+	M = glm::transpose(M);
+
+	glm::vec3 position;
+
+	position.x = m.getPosition().x;
+	position.y = m.getPosition().y;
+	position.z = m.getPosition().z;
+
+	glm::vec4 colour = glm::vec4(0, 0, 1, 1);
+
+	Gizmos::addSphere(position, radius, (radius * 10), (radius * 10), colour, &M);
+}
+
+void PhysXApp::FireSphere(glm::mat4 _camTrans)
+{
+	float density = 20;
+
+	PxSphereGeometry sphere(2);
+	PxTransform sphereTrans(PxVec3(_camTrans[3].x, _camTrans[3].y, _camTrans[3].z));
+	PxRigidDynamic* newSphere = PxCreateDynamic(*g_Physics, sphereTrans, sphere, *g_PhysicsMaterial, density);
+
+	g_PhysicsScene->addActor(*newSphere);
+	physxActors.push_back(newSphere);
+
+	float muzzleSpeed = -50; //value suggest by tut
+
+	glm::vec3 direction(_camTrans[2]);
+	PxVec3 velocity = PxVec3(direction.x, direction.y, direction.z) * muzzleSpeed;
+
+	newSphere->setLinearVelocity(velocity, true);
+}
+
 void PhysXApp::SetupTutorial1()
 {
 	//add a plane
@@ -171,9 +274,18 @@ void PhysXApp::SetupTutorial1()
 	float density = 10;
 	PxBoxGeometry box(2, 2, 2);
 	PxTransform transform(PxVec3(0, 5, 0));
-	PxRigidDynamic* dynamicActor = PxCreateDynamic(*g_Physics, transform, box, *g_PhysicsMaterial, density);
+	PxRigidDynamic* dynamicActorBox = PxCreateDynamic(*g_Physics, transform, box, *g_PhysicsMaterial, density);
 
-	//add the box to the physX scene
-	g_PhysicsScene->addActor(*dynamicActor);
-	physxActors.push_back(dynamicActor);
+	//add a sphere
+	PxSphereGeometry sphere(2);
+	PxTransform sphereTrans(PxVec3(0, 10, 0));
+	PxRigidDynamic* dynamicActorSphere = PxCreateDynamic(*g_Physics, sphereTrans, sphere, *g_PhysicsMaterial, density);
+
+	//add the actors to the physX scene
+	g_PhysicsScene->addActor(*dynamicActorBox);
+	g_PhysicsScene->addActor(*dynamicActorSphere);
+
+	//add actors to local scene for rendering
+	physxActors.push_back(dynamicActorBox);
+	physxActors.push_back(dynamicActorSphere);
 }

@@ -54,6 +54,9 @@
     <ClCompile Include="Source\TutNewtonsThirdLaw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Camera\Camera.h">
@@ -90,6 +93,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\TutNewtonsThirdLaw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

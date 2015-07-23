@@ -40,10 +40,16 @@ private:
 
 	void AddWidget(PxShape* _shape, PxRigidActor* _actor);
 	void AddBox(PxShape* _shape, PxRigidActor* _actor);
+	void AddSphere(PxShape* _shape, PxRigidActor* _actor);
+	void AddSphere(PxShape* _shape, PxRigidActor* _actor, glm::vec3 _startPos);
+
+	void FireSphere(glm::mat4 _camTrans);
 
 	//tutorial setup functions
 	void SetupTutorial1();
 
+	//input
+	float keyCD;
 };
 
 class myAllocator : public physx::PxAllocatorCallback

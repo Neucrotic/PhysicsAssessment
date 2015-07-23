@@ -27,7 +27,7 @@ public:
 	void RemoveActor(PhysicsObject* _actor);
 
 	void CheckForCollisions();
-
+	
 	//Specific Collision Functions
 	static bool PlaneToPlane(PhysicsObject* _planeA, PhysicsObject* _planeB);
 	static bool PlaneToSphere(PhysicsObject* _plane, PhysicsObject* _sphere);
@@ -42,4 +42,8 @@ public:
 	static bool BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB);
 
 private:
+
+	static glm::vec3 GetSmallestAxis(glm::vec3 &_vec);
+	static glm::vec2 GetAABBMoveRatio(Box* _boxA, Box* _boxB);
+
 };

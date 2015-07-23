@@ -2,6 +2,7 @@
 
 #include "App.h"
 
+class Box;
 class Sphere;
 class Plane;
 class PhysicsScene;
@@ -24,5 +25,8 @@ private:
 	Sphere* m_mySphereB;
 
 	Plane* m_myPlane;
+
+	Box* m_myBoxA;
+	Box* m_myBoxB;
 
 };

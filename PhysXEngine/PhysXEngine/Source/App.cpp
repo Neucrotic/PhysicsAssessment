@@ -21,9 +21,9 @@ int App::Run()
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Update(deltaTime);
 
 		Gizmos::clear();
+		Update(deltaTime);
 		Render();
 		Gizmos::draw(m_camera->GetProjectionView());
 

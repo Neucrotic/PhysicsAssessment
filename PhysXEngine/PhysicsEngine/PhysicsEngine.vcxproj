@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\App.cpp" />
+    <ClCompile Include="Source\Box.cpp" />
     <ClCompile Include="Source\Camera\Camera.cpp" />
     <ClCompile Include="Source\Camera\MobileCamera.cpp" />
     <ClCompile Include="Source\PhysicsObject.cpp" />
@@ -96,6 +97,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
+    <ClInclude Include="Source\Box.h" />
     <ClInclude Include="Source\Camera\Camera.h" />
     <ClInclude Include="Source\Camera\MobileCamera.h" />
     <ClInclude Include="Source\Giz_core\Gizmos.h" />
