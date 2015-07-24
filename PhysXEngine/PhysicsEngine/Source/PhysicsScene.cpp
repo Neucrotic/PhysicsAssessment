@@ -38,11 +38,35 @@ void PhysicsScene::RemoveActor(PhysicsObject* _actor)
 	m_actors.erase(m_actors.begin(), m_actors.end());
 }
 
+void PhysicsScene::AddSphere(Sphere*& _sphere, glm::vec3 _position, glm::vec3 _velocity, float _mass, float _radius)
+{
+	_sphere = new Sphere(_position, _velocity, _mass, _radius, glm::vec4(1, 0, 0, 1), false);
+
+	AddActor(_sphere);
+}
+
+void PhysicsScene::AddAABB(Box*& _box, glm::vec3 _position, glm::vec3 _velocity, float _mass, glm::vec3 _extents)
+{
+	_box = new Box(_position, _velocity, _mass, _extents, glm::vec4(0, 0, 1, 1), false);
+
+	AddActor(_box);
+}
+
+void PhysicsScene::AddPlane(Plane** _plane, glm::vec3 _normal, float _distToOrigin)
+{
+	*_plane = new Plane(_normal, _distToOrigin);
+
+	AddActor(*_plane);
+}
+
 void PhysicsScene::Update()
 {
 	for (auto actor : m_actors)
 	{
-		actor->Update(m_gravity, m_timeStep);
+		if (!actor->m_isStatic)
+		{
+			actor->Update(m_gravity, m_timeStep);
+		}
 	}
 }
 
@@ -63,10 +87,10 @@ typedef bool(*fn)(PhysicsObject*, PhysicsObject*);
 
 static fn collisionFunctionArray[] =
 {
-	PhysicsScene::PlaneToPlane,  PhysicsScene::PlaneToSphere,  PhysicsScene::PlaneToBox,
-	PhysicsScene::SphereToPlane, PhysicsScene::SphereToSphere, PhysicsScene::SphereToBox,
-	PhysicsScene::BoxToPlane,	 PhysicsScene::BoxToSphere,    PhysicsScene::BoxToBox
-
+	PhysicsScene::PlaneToPlane, PhysicsScene::PlaneToSphere, PhysicsScene::PlaneToBox, PhysicsScene::PlaneToJoint,
+	PhysicsScene::SphereToPlane, PhysicsScene::SphereToSphere, PhysicsScene::SphereToBox, PhysicsScene::SphereToJoint,
+	PhysicsScene::BoxToPlane, PhysicsScene::BoxToSphere, PhysicsScene::BoxToBox, PhysicsScene::BoxToJoint,
+	PhysicsScene::JointToPlane, PhysicsScene::JointToBox, PhysicsScene::JointToSphere, PhysicsScene::JointToJoint
 };
 
 void PhysicsScene::CheckForCollisions()
@@ -97,11 +121,10 @@ void PhysicsScene::CheckForCollisions()
 	}
 
 }
+
 //PLANE
-bool PhysicsScene::PlaneToPlane(PhysicsObject* _planeA, PhysicsObject* _planeB)
+bool PlaneToPlane(PhysicsObject* _plane, PhysicsObject* _plane2)
 {
-
-
 	return false;
 }
 
@@ -114,10 +137,16 @@ bool PhysicsScene::PlaneToSphere(PhysicsObject* _plane, PhysicsObject* _sphere)
 
 bool PhysicsScene::PlaneToBox(PhysicsObject* _plane, PhysicsObject* _box)
 {
-
+	BoxToPlane(_box, _plane);
 
 	return false;
 }
+
+bool PlaneToJoint(PhysicsObject* _plane, PhysicsObject* _joint)
+{
+	return false;
+}
+
 //SPHERE
 bool PhysicsScene::SphereToPlane(PhysicsObject* _sphere, PhysicsObject* _plane)
 {
@@ -164,8 +193,10 @@ bool PhysicsScene::SphereToSphere(PhysicsObject* _sphereA, PhysicsObject* _spher
 
 			float intersecDist = (sphereA->m_radius + sphereB->m_radius) - distance;
 
-			sphereA->m_position += intersecDist * collisionNormal;
-			sphereB->m_position -= intersecDist * collisionNormal;
+			ResolveCollisions(intersecDist * collisionNormal, sphereA, sphereB);
+
+			//sphereA->m_position += intersecDist * collisionNormal;
+			//sphereB->m_position -= intersecDist * collisionNormal;
 
 
 			return true;
@@ -177,7 +208,7 @@ bool PhysicsScene::SphereToSphere(PhysicsObject* _sphereA, PhysicsObject* _spher
 
 bool PhysicsScene::SphereToBox(PhysicsObject* _sphere, PhysicsObject* _box)
 {
-
+	BoxToSphere(_box, _sphere);
 
 	return false;
 }
@@ -208,12 +239,12 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 		box1->SetMinMaxExtents();
 		box2->SetMinMaxExtents();
 
-		if (box1->m_min.x < box2->m_max.x && box1->m_max.x > box2->m_min.x)
+		if (box1->m_max.x > box2->m_min.x && box1->m_min.x < box2->m_max.x)
 		{
 			float intersectX1 = box1->m_max.x - box2->m_min.x;
 			float intersectX2 = box2->m_max.x - box1->m_min.x;
 			
-			if (glm::abs(intersectX1) > glm::abs(intersectX2))
+			if (glm::abs(intersectX1) < glm::abs(intersectX2))
 			{
 				intersectionPoint.x = intersectX1;
 			}
@@ -226,8 +257,8 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 			{
 				float intersectY1 = box2->m_max.y - box1->m_min.y;
 				float intersectY2 = box1->m_max.y - box2->m_min.y;
-				
-				if (glm::abs(intersectY1) > glm::abs(intersectY2))
+
+				if (glm::abs(intersectY1) < glm::abs(intersectY2))
 				{
 					intersectionPoint.y = intersectY1;
 				}
@@ -241,7 +272,7 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 					float intersectZ1 = box2->m_max.z - box1->m_min.z;
 					float intersectZ2 = box1->m_max.z - box2->m_min.z;
 
-					if (glm::abs(intersectZ1) > glm::abs(intersectZ2))
+					if (glm::abs(intersectZ1) < glm::abs(intersectZ2))
 					{
 						intersectionPoint.z = intersectZ1;
 					}
@@ -249,35 +280,38 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 					{
 						intersectionPoint.z = intersectZ2;
 					}
+
+					//apply bounceBack
+					glm::vec3 CRV(GetCollisionRestitutionVector(box1, box2));
+
+					//adjust position on smallest axis
+					glm::vec3 intersectionAxis(GetSmallestAxis(intersectionPoint));
+
+					//box 1 = x, box 2 = y
+					glm::vec2 bounceBack = GetAABBMoveRatio(box1, box2);
+
+					if (intersectionAxis.x != 0)
+					{
+						box1->m_position.x += bounceBack.x * intersectionPoint.x;
+						box2->m_position.x -= bounceBack.y;
+					}
+					else if (intersectionAxis.y != 0)
+					{
+						box1->m_position.y += bounceBack.x;
+						box2->m_position.y += bounceBack.y;
+					}
+					else if (intersectionAxis.z != 0)
+					{
+						box1->m_position.z += bounceBack.x;
+						box2->m_position.z += bounceBack.y;
+					}
+
+					box1->m_velocity = glm::vec3(0);
+					box2->m_velocity = glm::vec3(0);
+
+					return true;
 				}
 			}
-			
-			//adjust position on smallest axis
-			glm::vec3 intersectionAxis(GetSmallestAxis(intersectionPoint));
-
-			//box 1 = x, box 2 = y
-			glm::vec2 bounceBack = GetAABBMoveRatio(box1, box2);
-
-			if (intersectionAxis.x != 0)
-			{
-				box1->m_transform[3].x += bounceBack.x;
-				box2->m_transform[3].x += bounceBack.y;
-			}
-			else if (intersectionAxis.y != 0)
-			{
-				box1->m_transform[3].y += bounceBack.x;
-				box2->m_transform[3].y += bounceBack.y;
-			}
-			else if (intersectionAxis.z != 0)
-			{
-				box1->m_transform[3].z += bounceBack.x;
-				box2->m_transform[3].z += bounceBack.y;
-			}
-
-			box1->m_velocity = glm::vec3(0);
-			box2->m_velocity = glm::vec3(0);
-
-			return true;
 		}		
 	}		
 
@@ -324,4 +358,41 @@ glm::vec2 PhysicsScene::GetAABBMoveRatio(Box* _boxX, Box* _boxY)
 	float moveRatioB = 1 - (_boxY->m_mass / (_boxX->m_mass + _boxY->m_mass));
 
 	return glm::vec2(moveRatioA, moveRatioB);
+}
+
+glm::vec3 PhysicsScene::GetCollisionRestitutionVector(RigidBody* _objA, RigidBody* _objB)
+{
+	glm::vec3 colNorm = glm::normalize((_objB->m_position - _objA->m_position));
+	
+	
+	return glm::vec3(1);
+}
+
+void PhysicsScene::ResolveCollisions(glm::vec3 _crv, RigidBody* _objA, RigidBody* _objB)
+{
+	float bounceA = _objA->m_mass / (_objA->m_mass + _objB->m_mass);
+	float bounceB = _objB->m_mass / (_objA->m_mass + _objB->m_mass);
+
+	_objA->m_position -= (_crv * bounceA);
+	_objB->m_position += (_crv * bounceB);
+}
+
+bool PhysicsScene::JointToPlane(PhysicsObject* _joint, PhysicsObject* _plane)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToBox(PhysicsObject* _joint, PhysicsObject* _box)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToSphere(PhysicsObject* _joint, PhysicsObject* _sphere)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToJoint(PhysicsObject* _joint, PhysicsObject* _joint2)
+{
+	return false;
 }

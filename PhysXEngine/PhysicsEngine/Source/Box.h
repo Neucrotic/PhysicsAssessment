@@ -5,7 +5,7 @@ class Box : public RigidBody
 {
 public:
 
-	Box(glm::vec3 _position, glm::vec3 _velocity, float _mass, glm::vec3 _extents, glm::vec4 _colour);
+	Box(glm::vec3 _position, glm::vec3 _velocity, float _mass, glm::vec3 _extents, glm::vec4 _colour, bool _isStatic);
 
 	glm::vec3 m_extents;
 	glm::mat4 m_transform;

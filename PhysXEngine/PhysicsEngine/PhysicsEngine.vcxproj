@@ -92,6 +92,7 @@
     <ClCompile Include="Source\Giz_core\gl_core_4_4.c" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\PhysicsScene.cpp" />
+    <ClCompile Include="Source\SpringJoint.cpp" />
     <ClCompile Include="Source\TutNewtonsThirdLaw.cpp" />
     <ClCompile Include="Source\TutCollisionDetection.cpp" />
   </ItemGroup>
@@ -107,6 +108,7 @@
     <ClInclude Include="Source\Plane.h" />
     <ClInclude Include="Source\RigidBody.h" />
     <ClInclude Include="Source\Sphere.h" />
+    <ClInclude Include="Source\SpringJoint.h" />
     <ClInclude Include="Source\TutNewtonsThirdLaw.h" />
     <ClInclude Include="Source\TutCollisionDetection.h" />
   </ItemGroup>

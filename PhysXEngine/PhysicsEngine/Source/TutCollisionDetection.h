@@ -5,6 +5,7 @@
 class Box;
 class Sphere;
 class Plane;
+class SpringJoint;
 class PhysicsScene;
 
 class TutCollisionDetection : public App
@@ -29,4 +30,10 @@ private:
 	Box* m_myBoxA;
 	Box* m_myBoxB;
 
+	SpringJoint* m_myJoint; //DANKKUSHDANKKUSHDANKKUSHDANKKUSHDANKKUSHDANKKUSH
+	double m_keyCD = 0.15f;
+	bool m_sphereActive;
+
+	void FireSphere();
+	void FireAABB();
 };

@@ -6,6 +6,8 @@ Plane::Plane()
 	m_normal = glm::vec3(0, 1, 0);
 	m_distanceFromOrigin = 0;
 
+	m_isStatic = true;
+
 	m_shapeID = PLANE;
 }
 
@@ -13,6 +15,8 @@ Plane::Plane(glm::vec3 _normal, float _distanceToOrigin)
 {
 	m_normal = _normal;
 	m_distanceFromOrigin = _distanceToOrigin;
+
+	m_isStatic = true;
 
 	m_shapeID = PLANE;
 }

@@ -1,18 +1,20 @@
 #include "RigidBody.h"
 
-RigidBody::RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _rotation, float _mass)
+RigidBody::RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _rotation, float _mass, bool _isStatic)
 {
 	m_position = _position;
 	m_velocity = _velocity;
 	m_rotation2D = _rotation;
 	m_mass = _mass;
+	m_isStatic = _isStatic;
 }
 
-RigidBody::RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _mass)
+RigidBody::RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _mass, bool _isStatic)
 {
 	m_position = _position;
 	m_velocity = _velocity;
 	m_mass = _mass;
+	m_isStatic = _isStatic;
 }
 
 void RigidBody::Update(glm::vec2 _gravity, float _deltaTime)

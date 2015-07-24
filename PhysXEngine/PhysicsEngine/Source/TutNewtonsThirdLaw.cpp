@@ -14,8 +14,8 @@ void TutNewtonsThirdLaw::Startup()
 
 	m_physicsScene = new PhysicsScene(glm::vec2(0, 0), 0.001f);
 
-	m_ballA = new Sphere(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1.0f, 3.0f, glm::vec4(1, 0, 0, 1));
-	m_ballB = new Sphere(glm::vec3(6, 0, 0), glm::vec3(0, 0, 0), 1.0f, 3.0f, glm::vec4(0, 0, 1, 1));
+	m_ballA = new Sphere(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), 1.0f, 3.0f, glm::vec4(1, 0, 0, 1), false);
+	m_ballB = new Sphere(glm::vec3(6, 0, 0), glm::vec3(0, 0, 0), 1.0f, 3.0f, glm::vec4(0, 0, 1, 1), false);
 
 	m_physicsScene->AddActor(m_ballA);
 	m_physicsScene->AddActor(m_ballB);

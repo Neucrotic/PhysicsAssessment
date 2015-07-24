@@ -6,8 +6,8 @@ class RigidBody : public PhysicsObject
 {
 public:
 
-	RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _rotation, float _mass);
-	RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _mass);
+	RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _rotation, float _mass, bool _isStatic);
+	RigidBody(glm::vec3 _position, glm::vec3 _velocity, float _mass, bool _isStatic);
 
 	glm::vec3 m_position;
 	glm::vec3 m_velocity;

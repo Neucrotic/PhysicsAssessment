@@ -5,7 +5,7 @@ class Sphere : public RigidBody
 {
 public:
 
-	Sphere(glm::vec3 _position, glm::vec3 _velocity, float _mass, float _radius, glm::vec4 _colour);
+	Sphere(glm::vec3 _position, glm::vec3 _velocity, float _mass, float _radius, glm::vec4 _colour, bool _isStatic);
 
 	float m_radius;
 

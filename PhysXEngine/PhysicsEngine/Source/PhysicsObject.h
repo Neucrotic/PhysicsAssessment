@@ -10,10 +10,13 @@ public:
 	{
 		PLANE,
 		SPHERE,
-		BOX
+		BOX,
+		JOINT
 	};
 
 	ShapeType m_shapeID;
+	
+	bool m_isStatic;
 
 	virtual void Update(glm::vec2 _gravity, float _deltaTime) = 0;
 	virtual void Debug() = 0; //use to print debug information to the console
