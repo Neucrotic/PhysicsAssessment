@@ -25,6 +25,10 @@ void SpringJoint::Update(glm::vec2 _gravity, float _dt)
 	{
 		if (!m_connections[i]->m_isStatic)
 		{
+			//damping before apply force
+			//glm::vec3 damp = m_damping * m_connections[i]->m_velocity;
+			//F -= damp;
+
 			m_connections[i]->m_velocity += F;
 		}
 	}

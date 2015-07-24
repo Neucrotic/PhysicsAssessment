@@ -6,6 +6,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include "SpringJoint.h"
 
 PhysicsScene::PhysicsScene()
 {
@@ -63,7 +64,7 @@ void PhysicsScene::Update()
 {
 	for (auto actor : m_actors)
 	{
-		if (!actor->m_isStatic)
+		if (!actor->m_isStatic || (actor->m_isStatic && actor->m_shapeID == 3))
 		{
 			actor->Update(m_gravity, m_timeStep);
 		}
@@ -123,7 +124,7 @@ void PhysicsScene::CheckForCollisions()
 }
 
 //PLANE
-bool PlaneToPlane(PhysicsObject* _plane, PhysicsObject* _plane2)
+bool PhysicsScene::PlaneToPlane(PhysicsObject* _plane, PhysicsObject* _plane2)
 {
 	return false;
 }
@@ -142,11 +143,10 @@ bool PhysicsScene::PlaneToBox(PhysicsObject* _plane, PhysicsObject* _box)
 	return false;
 }
 
-bool PlaneToJoint(PhysicsObject* _plane, PhysicsObject* _joint)
+bool PhysicsScene::PlaneToJoint(PhysicsObject* _plane, PhysicsObject* _joint)
 {
 	return false;
 }
-
 //SPHERE
 bool PhysicsScene::SphereToPlane(PhysicsObject* _sphere, PhysicsObject* _plane)
 {
@@ -195,9 +195,6 @@ bool PhysicsScene::SphereToSphere(PhysicsObject* _sphereA, PhysicsObject* _spher
 
 			ResolveCollisions(intersecDist * collisionNormal, sphereA, sphereB);
 
-			//sphereA->m_position += intersecDist * collisionNormal;
-			//sphereB->m_position -= intersecDist * collisionNormal;
-
 
 			return true;
 		}		
@@ -212,10 +209,64 @@ bool PhysicsScene::SphereToBox(PhysicsObject* _sphere, PhysicsObject* _box)
 
 	return false;
 }
+
+bool PhysicsScene::SphereToJoint(PhysicsObject* _sphere, PhysicsObject* _joint)
+{
+	return false;
+}
 //BOX
 bool PhysicsScene::BoxToPlane(PhysicsObject* _box, PhysicsObject* _plane)
 {
-	
+	Box* box = dynamic_cast<Box*>(_box);
+	Plane* plane = dynamic_cast<Plane*>(_plane);
+
+	float halfExtents = box->m_extents.x / 2;
+
+	glm::vec3 point1;
+	glm::vec3 point2;
+	glm::vec3 point3;
+	glm::vec3 point4;
+	glm::vec3 point5;
+	glm::vec3 point6;
+	glm::vec3 point7;
+	glm::vec3 point8;
+
+#pragma region initialising_points
+
+	point1.x = box->m_position.x + halfExtents;
+	point1.y = box->m_position.y + halfExtents;
+	point1.z = box->m_position.z + halfExtents;
+
+	point2.x = box->m_position.x + halfExtents;
+	point2.y = box->m_position.y + halfExtents;
+	point2.z = box->m_position.z - halfExtents;
+
+	point3.x = box->m_position.x + halfExtents;
+	point3.y = box->m_position.y - halfExtents;
+	point3.z = box->m_position.z + halfExtents;
+
+	point4.x = box->m_position.x + halfExtents;
+	point4.y = box->m_position.y - halfExtents;
+	point4.z = box->m_position.z - halfExtents;
+
+	point5.x = box->m_position.x - halfExtents;
+	point5.y = box->m_position.y - halfExtents;
+	point5.z = box->m_position.z + halfExtents;
+
+	point6.x = box->m_position.x - halfExtents;
+	point6.y = box->m_position.y - halfExtents;
+	point6.z = box->m_position.z - halfExtents;
+
+	point7.x = box->m_position.x - halfExtents;
+	point7.y = box->m_position.y + halfExtents;
+	point7.z = box->m_position.z + halfExtents;
+
+	point8.x = box->m_position.x - halfExtents;
+	point8.y = box->m_position.y + halfExtents;
+	point8.z = box->m_position.z - halfExtents;
+#pragma endregion
+
+
 
 	return false;
 }
@@ -281,30 +332,14 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 						intersectionPoint.z = intersectZ2;
 					}
 
+					//calculating CRV
+					glm::vec3 colNorm = glm::normalize((box2->m_position - box1->m_position));
+					float intersectDepth = (box1->m_extents.x + box2->m_extents.x) - glm::length(box2->m_position - box1->m_position);
+
+					glm::vec3 CRV(colNorm * intersectDepth);
+
 					//apply bounceBack
-					glm::vec3 CRV(GetCollisionRestitutionVector(box1, box2));
-
-					//adjust position on smallest axis
-					glm::vec3 intersectionAxis(GetSmallestAxis(intersectionPoint));
-
-					//box 1 = x, box 2 = y
-					glm::vec2 bounceBack = GetAABBMoveRatio(box1, box2);
-
-					if (intersectionAxis.x != 0)
-					{
-						box1->m_position.x += bounceBack.x * intersectionPoint.x;
-						box2->m_position.x -= bounceBack.y;
-					}
-					else if (intersectionAxis.y != 0)
-					{
-						box1->m_position.y += bounceBack.x;
-						box2->m_position.y += bounceBack.y;
-					}
-					else if (intersectionAxis.z != 0)
-					{
-						box1->m_position.z += bounceBack.x;
-						box2->m_position.z += bounceBack.y;
-					}
+					ResolveCollisions(CRV, box1, box2);
 
 					box1->m_velocity = glm::vec3(0);
 					box2->m_velocity = glm::vec3(0);
@@ -315,6 +350,31 @@ bool PhysicsScene::BoxToBox(PhysicsObject* _boxA, PhysicsObject* _boxB)
 		}		
 	}		
 
+	return false;
+}
+
+bool PhysicsScene::BoxToJoint(PhysicsObject* _box, PhysicsObject* _joint)
+{
+	return false;
+}
+//JOINT
+bool PhysicsScene::JointToPlane(PhysicsObject* _joint, PhysicsObject* _plane)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToBox(PhysicsObject* _joint, PhysicsObject* _box)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToSphere(PhysicsObject* _joint, PhysicsObject* _sphere)
+{
+	return false;
+}
+
+bool PhysicsScene::JointToJoint(PhysicsObject* _joint, PhysicsObject* _joint2)
+{
 	return false;
 }
 
@@ -360,14 +420,6 @@ glm::vec2 PhysicsScene::GetAABBMoveRatio(Box* _boxX, Box* _boxY)
 	return glm::vec2(moveRatioA, moveRatioB);
 }
 
-glm::vec3 PhysicsScene::GetCollisionRestitutionVector(RigidBody* _objA, RigidBody* _objB)
-{
-	glm::vec3 colNorm = glm::normalize((_objB->m_position - _objA->m_position));
-	
-	
-	return glm::vec3(1);
-}
-
 void PhysicsScene::ResolveCollisions(glm::vec3 _crv, RigidBody* _objA, RigidBody* _objB)
 {
 	float bounceA = _objA->m_mass / (_objA->m_mass + _objB->m_mass);
@@ -375,24 +427,4 @@ void PhysicsScene::ResolveCollisions(glm::vec3 _crv, RigidBody* _objA, RigidBody
 
 	_objA->m_position -= (_crv * bounceA);
 	_objB->m_position += (_crv * bounceB);
-}
-
-bool PhysicsScene::JointToPlane(PhysicsObject* _joint, PhysicsObject* _plane)
-{
-	return false;
-}
-
-bool PhysicsScene::JointToBox(PhysicsObject* _joint, PhysicsObject* _box)
-{
-	return false;
-}
-
-bool PhysicsScene::JointToSphere(PhysicsObject* _joint, PhysicsObject* _sphere)
-{
-	return false;
-}
-
-bool PhysicsScene::JointToJoint(PhysicsObject* _joint, PhysicsObject* _joint2)
-{
-	return false;
 }

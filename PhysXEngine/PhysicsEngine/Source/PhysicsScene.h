@@ -62,7 +62,6 @@ private:
 	static glm::vec3 GetSmallestAxis(glm::vec3 &_vec);
 	static glm::vec2 GetAABBMoveRatio(Box* _boxA, Box* _boxB);
 
-	static glm::vec3 GetCollisionRestitutionVector(RigidBody* _objA, RigidBody* _objB);
 	static void ResolveCollisions(glm::vec3 _crv, RigidBody* _obj1, RigidBody* _obj2);
 
 };

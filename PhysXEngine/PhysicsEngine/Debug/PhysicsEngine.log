@@ -1,4 +1,4 @@
-﻿Build started 24/07/2015 5:09:46 PM.
+﻿Build started 24/07/2015 7:53:15 PM.
      1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glm\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\include\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\PhysicsScene.cpp
@@ -19,14 +19,9 @@
          Debug\SpringJoint.obj
          Debug\TutNewtonsThirdLaw.obj
          Debug\TutCollisionDetection.obj
-     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-     1>PhysicsScene.obj : error LNK2001: unresolved external symbol "public: static bool __cdecl PhysicsScene::PlaneToPlane(class PhysicsObject *,class PhysicsObject *)" (?PlaneToPlane@PhysicsScene@@SA_NPAVPhysicsObject@@0@Z)
-     1>PhysicsScene.obj : error LNK2001: unresolved external symbol "public: static bool __cdecl PhysicsScene::PlaneToJoint(class PhysicsObject *,class PhysicsObject *)" (?PlaneToJoint@PhysicsScene@@SA_NPAVPhysicsObject@@0@Z)
-     1>PhysicsScene.obj : error LNK2001: unresolved external symbol "public: static bool __cdecl PhysicsScene::SphereToJoint(class PhysicsObject *,class PhysicsObject *)" (?SphereToJoint@PhysicsScene@@SA_NPAVPhysicsObject@@0@Z)
-     1>PhysicsScene.obj : error LNK2001: unresolved external symbol "public: static bool __cdecl PhysicsScene::BoxToJoint(class PhysicsObject *,class PhysicsObject *)" (?BoxToJoint@PhysicsScene@@SA_NPAVPhysicsObject@@0@Z)
-     1>C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe : fatal error LNK1120: 4 unresolved externals
-     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" (Build target(s)) -- FAILED.
+         PhysicsEngine.vcxproj -> C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe
+     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:01.58
+Time Elapsed 00:00:02.16
