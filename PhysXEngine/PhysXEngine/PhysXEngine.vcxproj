@@ -102,6 +102,8 @@
     <ClInclude Include="Source\Giz_core\Gizmos.h" />
     <ClInclude Include="Source\Giz_core\gl_core_4_4.h" />
     <ClInclude Include="Source\PhysXApp.h" />
+    <ClInclude Include="Source\Ragdoll.h" />
+    <ClInclude Include="Source\RagdollData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

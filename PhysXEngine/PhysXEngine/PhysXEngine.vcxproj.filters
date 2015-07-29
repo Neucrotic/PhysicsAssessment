@@ -56,5 +56,11 @@
     <ClInclude Include="Source\PhysXApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\RagdollData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ragdoll.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,17 +17,17 @@ void TutCollisionDetection::Startup()
 
 	m_physicsScene = new PhysicsScene(glm::vec2(0, 0), 0.001f);
 
-	//m_mySphereA = new Sphere(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1), false);
-	//m_mySphereB = new Sphere(glm::vec3(0, 10, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1), true);
+	m_mySphereA = new Sphere(glm::vec3(0, 5, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1), false);
+	m_mySphereB = new Sphere(glm::vec3(0, 10, 0), glm::vec3(0, 0, 0), 1.0f, 1.0f, glm::vec4(1, 0, 1, 1), true);
 
-	//m_myJoint = new SpringJoint(m_mySphereA, m_mySphereB, 10, 5);
-	//m_physicsScene->AddActor(m_myJoint);
-	//m_physicsScene->AddActor(m_mySphereA);
-	//m_physicsScene->AddActor(m_mySphereB);
+	m_myJoint = new SpringJoint(m_mySphereA, m_mySphereB, 10, 5);
+	m_physicsScene->AddActor(m_myJoint);
+	m_physicsScene->AddActor(m_mySphereA);
+	m_physicsScene->AddActor(m_mySphereB);
 
 	//m_physicsScene->AddPlane(&m_myPlane, glm::vec3(0, 1, 0), 0);
-	m_physicsScene->AddAABB(m_myBoxA, glm::vec3(10, -5, 0), glm::vec3(-200, 0, 0), 1.0f, glm::vec3(1, 1, 1));
-	m_physicsScene->AddAABB(m_myBoxB, glm::vec3(-10, -5, 0), glm::vec3(200, 0, 0), 10.0f, glm::vec3(1, 1, 1));
+	//m_physicsScene->AddAABB(m_myBoxA, glm::vec3(10, -5, 0), glm::vec3(-200, 0, 0), 1.0f, glm::vec3(1, 1, 1));
+	//m_physicsScene->AddAABB(m_myBoxB, glm::vec3(-10, -5, 0), glm::vec3(200, 0, 0), 10.0f, glm::vec3(1, 1, 1));
 
 	m_sphereActive = true;
 }
