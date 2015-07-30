@@ -1,5 +1,7 @@
 #include "PhysXApp.h"
 #include "Camera\MobileCamera.h"
+#include "Ragdoll.h"
+#include "RagdollData.h"
 
 void PhysXApp::Startup()
 {
@@ -12,7 +14,9 @@ void PhysXApp::Startup()
 	SetUpPhysX();
 	SetUpVisualDebugger();
 
-	SetupTutorial1();
+	//SetupTutorial1();
+	//SetUpTutRagdoll();
+	SetupTutController();
 
 	keyCD = 0.15f;
 }
@@ -26,7 +30,14 @@ void PhysXApp::Shutdown()
 
 bool PhysXApp::Update(double _dt)
 {
-	m_camera->Update(_dt);
+	glm::vec3 lookAtPos;
+	lookAtPos.x = m_capsule->getGlobalPose().p.x;
+	lookAtPos.y = m_capsule->getGlobalPose().p.y;
+	lookAtPos.z = m_capsule->getGlobalPose().p.z;
+
+	m_camera->SetPosition(m_cameraPos + m_camOffset);
+	m_camera->LookAt(lookAtPos, glm::vec3(0, 1, 0));
+
 	UpdatePhysX(_dt);
 
 	if (keyCD <= 0)
@@ -131,6 +142,8 @@ void PhysXApp::AddWidget(PxShape* _shape, PxRigidActor* _actor)
 	case PxGeometryType::eSPHERE:
 		AddSphere(_shape, _actor);
 		break;
+	case PxGeometryType::eCAPSULE:
+		AddCapsule(_shape, _actor);
 	}
 }
 
@@ -209,6 +222,48 @@ void PhysXApp::AddSphere(PxShape* _shape, PxRigidActor* _actor)
 	Gizmos::addSphere(position, radius, (radius * 10), (radius * 10), colour, &M);
 }
 
+void PhysXApp::AddCapsule(PxShape* _shape, PxRigidActor* _actor)
+{
+	PxCapsuleGeometry geometry;
+
+	float radius;
+	float halfHeight;
+
+	bool status = _shape->getCapsuleGeometry(geometry);
+
+	if (status)
+	{
+		radius = geometry.radius;
+		halfHeight = geometry.halfHeight;
+	}
+
+	PxMat44 m(PxShapeExt::getGlobalPose(*_shape, *_actor));
+
+	glm::mat4 M(m.column0.x, m.column0.y, m.column0.z, m.column0.w,
+				m.column1.x, m.column1.y, m.column1.z, m.column1.w,
+				m.column2.x, m.column2.y, m.column2.z, m.column2.w,
+				m.column3.x, m.column3.y, m.column3.z, m.column3.w);
+
+
+	M = glm::transpose(M);
+
+	glm::vec3 position;
+	position.x = m.getPosition().x;
+	position.y = m.getPosition().y;
+	position.z = m.getPosition().z;
+
+	glm::vec4 axis(halfHeight, 0, 0, 0); // axis for the capsule
+	axis = M * axis; //rotating axis to correct orientation
+	glm::vec4 colour = glm::vec4(0, 0, 0, 1);
+
+	Gizmos::addSphere(position + axis.xyz(), radius, 10, 10, colour);
+	Gizmos::addSphere(position - axis.xyz(), radius, 10, 10, colour);
+	//fix the gizmo rotation
+	glm::mat4 m2 = glm::rotate(M, 11 / 7.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+
+	Gizmos::addCylinderFilled(position, radius, halfHeight, 10, colour, &m2);
+}
+
 void AddSphere(PxShape* _shape, PxRigidActor* _actor, glm::vec3 _startPos)
 {
 	PxSphereGeometry geometry;
@@ -261,6 +316,45 @@ void PhysXApp::FireSphere(glm::mat4 _camTrans)
 	newSphere->setLinearVelocity(velocity, true);
 }
 
+void PhysXApp::MovePlayerController(double _dt)
+{
+	const PxVec3 up(0, 1, 0);
+	bool onGround;
+	float movementSpeed = 10.0f;
+	float rotationSpeed = 1.0f;
+	float minDistance = 0.001f;
+
+	if (m_myHitReport->GetPlayerContactNormal().y > 0.3f)
+	{
+		m_characterYVelocity = -0.1f;
+		onGround = true;
+	}
+	else
+	{
+		m_characterYVelocity += -10 * _dt;
+		onGround = false;
+	}
+
+	m_myHitReport->ClearPlayerContactNormal();
+	PxVec3 velocity(0, m_characterYVelocity, 0);
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		velocity.x -= movementSpeed * _dt;
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		velocity.x += movementSpeed * _dt;
+	}
+
+	PxControllerFilters filter;
+
+	//fix this line --> PxQuat rotation(m_characterRotation, PxVec3(0, 1, 0));
+	PxVec3 velocity(0, m_characterYVelocity, 0);
+	//make contorller move
+}
+
+//TUTORIALS
 void PhysXApp::SetupTutorial1()
 {
 	//add a plane
@@ -288,4 +382,61 @@ void PhysXApp::SetupTutorial1()
 	//add actors to local scene for rendering
 	physxActors.push_back(dynamicActorBox);
 	physxActors.push_back(dynamicActorSphere);
+}
+
+void PhysXApp::SetUpTutRagdoll()
+{
+	//add a plane
+	PxTransform pose = PxTransform(PxVec3(0.0f, -4, 0.0f), physx::PxQuat(PxHalfPi * 1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
+	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
+	
+	//add the plane to the scene
+	g_PhysicsScene->addActor(*plane);
+
+	Ragdoll* ragdoll = new Ragdoll();
+
+	PxArticulation* ragdollArticulation;
+	ragdollArticulation = ragdoll->MakeRagdoll(g_Physics, ragdoll->m_ragdollData, PxTransform(PxVec3(0, 10, 0)), 0.1f, g_PhysicsMaterial);
+	
+	g_PhysicsScene->addArticulation(*ragdollArticulation);
+}
+
+void PhysXApp::SetupTutController()
+{
+	//add a plane
+	PxTransform pose = PxTransform(PxVec3(0.0f, -4, 0.0f), physx::PxQuat(PxHalfPi * 1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
+	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
+	//add the plane to the scene
+	g_PhysicsScene->addActor(*plane);
+
+	PxCapsuleGeometry capsule(2, 4);
+	PxTransform capsuleTrans(PxVec3(0, 5, 0), PxQuat(PxPi / 2.0f, PxVec3(0, 0, 1.0f)));
+	m_capsule = PxCreateDynamic(*g_Physics, capsuleTrans, capsule, *g_PhysicsMaterial, 10);
+
+	g_PhysicsScene->addActor(*m_capsule);
+	physxActors.push_back(m_capsule);
+
+	m_camOffset = glm::vec3(0, 6, 30);
+	
+	//converting form physX to GLM
+	m_cameraPos.x = capsuleTrans.p.x;
+	m_cameraPos.y = capsuleTrans.p.y;
+	m_cameraPos.z = capsuleTrans.p.z;
+
+	m_camera->SetPosition(m_cameraPos + m_camOffset);
+}
+//---------- PhysXApp ENDS ----------
+
+//---------- MyControllerHitReport STARTS ----------
+void MyControllerHitReport::OnShapeHit(const PxControllerShapeHit &_hit)
+{
+	PxRigidActor* actor = _hit.shape->getActor();
+
+	m_playerContactNormal = _hit.worldNormal;
+
+	PxRigidDynamic* myActor = actor->is<PxRigidDynamic>();
+	if (myActor != NULL)
+	{
+		
+	}
 }

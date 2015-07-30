@@ -94,6 +94,7 @@
     <ClCompile Include="Source\Giz_core\gl_core_4_4.c" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\PhysXApp.cpp" />
+    <ClCompile Include="Source\Ragdoll.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\App.h" />
