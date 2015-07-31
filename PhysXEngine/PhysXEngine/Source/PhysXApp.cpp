@@ -2,6 +2,8 @@
 #include "Camera\MobileCamera.h"
 #include "Ragdoll.h"
 #include "RagdollData.h"
+#include "ParticleEmitter.h";
+#include "ParticleFluidEmitter.h";
 
 void PhysXApp::Startup()
 {
@@ -16,7 +18,8 @@ void PhysXApp::Startup()
 
 	//SetupTutorial1();
 	//SetUpTutRagdoll();
-	SetupTutController();
+	//SetupTutController();
+	SetupTutFluid();
 
 	keyCD = 0.15f;
 }
@@ -30,15 +33,26 @@ void PhysXApp::Shutdown()
 
 bool PhysXApp::Update(double _dt)
 {
-	glm::vec3 lookAtPos;
-	lookAtPos.x = m_capsule->getGlobalPose().p.x;
-	lookAtPos.y = m_capsule->getGlobalPose().p.y;
-	lookAtPos.z = m_capsule->getGlobalPose().p.z;
+	m_camera->Update(_dt);
 
-	m_camera->SetPosition(m_cameraPos + m_camOffset);
-	m_camera->LookAt(lookAtPos, glm::vec3(0, 1, 0));
+	if (m_capsule == NULL)
+	{
+		glm::vec3 lookAtPos;
+		lookAtPos.x = m_capsule->getGlobalPose().p.x;
+		lookAtPos.y = m_capsule->getGlobalPose().p.y;
+		lookAtPos.z = m_capsule->getGlobalPose().p.z;
+
+		m_camera->SetPosition(m_cameraPos + m_camOffset);
+		m_camera->LookAt(lookAtPos, glm::vec3(0, 1, 0));
+	}
 
 	UpdatePhysX(_dt);
+
+	//updating particles
+	if (m_particleEmitter)
+	{
+		m_particleEmitter->update(_dt);
+	}
 
 	if (keyCD <= 0)
 	{
@@ -59,6 +73,12 @@ bool PhysXApp::Update(double _dt)
 void PhysXApp::Render()
 {
 	Gizmos::addTransform(glm::mat4(1));
+
+	//rendering particles
+	if (m_particleEmitter)
+	{
+		m_particleEmitter->renderParticles();
+	}
 }
 
 void PhysXApp::SetUpPhysX()
@@ -94,7 +114,7 @@ void PhysXApp::UpdatePhysX(double _dt)
 
 	}
 
-	for (auto actor : physxActors)
+	for (auto actor : m_physxActors)
 	{
 		PxU32 numShapes = actor->getNbShapes();
 		PxShape** shapes = new PxShape*[numShapes];
@@ -306,7 +326,7 @@ void PhysXApp::FireSphere(glm::mat4 _camTrans)
 	PxRigidDynamic* newSphere = PxCreateDynamic(*g_Physics, sphereTrans, sphere, *g_PhysicsMaterial, density);
 
 	g_PhysicsScene->addActor(*newSphere);
-	physxActors.push_back(newSphere);
+	m_physxActors.push_back(newSphere);
 
 	float muzzleSpeed = -50; //value suggest by tut
 
@@ -349,9 +369,10 @@ void PhysXApp::MovePlayerController(double _dt)
 
 	PxControllerFilters filter;
 
-	//fix this line --> PxQuat rotation(m_characterRotation, PxVec3(0, 1, 0));
-	PxVec3 velocity(0, m_characterYVelocity, 0);
+	PxQuat rotation(m_characterRotation, PxVec3(0, 1, 0));
+	//velocity = PxVec3(0, m_characterYVelocity, 0);
 	//make contorller move
+
 }
 
 //TUTORIALS
@@ -380,8 +401,8 @@ void PhysXApp::SetupTutorial1()
 	g_PhysicsScene->addActor(*dynamicActorSphere);
 
 	//add actors to local scene for rendering
-	physxActors.push_back(dynamicActorBox);
-	physxActors.push_back(dynamicActorSphere);
+	m_physxActors.push_back(dynamicActorBox);
+	m_physxActors.push_back(dynamicActorSphere);
 }
 
 void PhysXApp::SetUpTutRagdoll()
@@ -414,21 +435,119 @@ void PhysXApp::SetupTutController()
 	m_capsule = PxCreateDynamic(*g_Physics, capsuleTrans, capsule, *g_PhysicsMaterial, 10);
 
 	g_PhysicsScene->addActor(*m_capsule);
-	physxActors.push_back(m_capsule);
+	m_physxActors.push_back(m_capsule);
 
 	m_camOffset = glm::vec3(0, 6, 30);
 	
 	//converting form physX to GLM
-	m_cameraPos.x = capsuleTrans.p.x;
-	m_cameraPos.y = capsuleTrans.p.y;
-	m_cameraPos.z = capsuleTrans.p.z;
-
+	m_cameraPos = Vec3PhysXToGLM(capsuleTrans.p);
 	m_camera->SetPosition(m_cameraPos + m_camOffset);
+
+	m_myHitReport = new ControllerHitReport();
+	PxControllerManager* characterManager = PxCreateControllerManager(*g_PhysicsScene);
+	PxCapsuleControllerDesc desc;
+	desc.height = 1.6f;
+	desc.radius = 0.4f;
+	desc.position.set(0, 0, 0);
+	desc.material = g_PhysicsMaterial;
+	desc.reportCallback = m_myHitReport; //this connects it to collsion detection routine
+	desc.density = 10;
+
+	m_playerController = characterManager->createController(desc);
+	m_playerController->setPosition(PxExtendedVec3(0, 0, 0));
+
+	//initialise character related member variables
+	m_characterYVelocity = 0;
+	m_characterRotation = 0;
+	m_playerGravity = -5.0f;
+
+	m_myHitReport->ClearPlayerContactNormal();
+	//g_PhysicsScene->addActor(m_playerController->getActor());
 }
+
+void PhysXApp::SetupTutFluid()
+{
+#pragma region Tub_Initialisation
+	PxTransform pose = PxTransform(PxVec3(0.0f, 0, 0.0f), PxQuat(PxHalfPi, PxVec3(0.0f, 0.0f, 1.0f)));
+	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
+	const PxU32 numShapes = plane->getNbShapes();
+	g_PhysicsScene->addActor(*plane);
+
+	PxBoxGeometry side1(4.5f, 1, 0.5f);
+	PxBoxGeometry side2(0.5f, 1, 4.5f);
+	pose = PxTransform(PxVec3(0.0f, 0.5f, 4.0f));
+	
+	PxRigidStatic* box = PxCreateStatic(*g_Physics, pose, side1, *g_PhysicsMaterial);
+	g_PhysicsScene->addActor(*box);
+	m_physxActors.push_back(box);
+
+	pose = PxTransform(PxVec3(0.0f, 0.5f, -4.0f));
+	box = PxCreateStatic(*g_Physics, pose, side1, *g_PhysicsMaterial);
+	g_PhysicsScene->addActor(*box);
+	m_physxActors.push_back(box);
+
+	pose = PxTransform(PxVec3(4.0f, 0.5f, 0.0f));
+	box = PxCreateStatic(*g_Physics, pose, side2, *g_PhysicsMaterial);
+	g_PhysicsScene->addActor(*box);
+	m_physxActors.push_back(box);
+
+	pose = PxTransform(PxVec3(-4.0f, 0.5f, 0.0f));
+	box = PxCreateStatic(*g_Physics, pose, side2, *g_PhysicsMaterial);
+	g_PhysicsScene->addActor(*box);
+	m_physxActors.push_back(box);
+#pragma endregion
+
+	PxParticleFluid* pf;
+
+	PxU32 maxParticles = 2000;
+	bool perParticleResetOffset = false;
+	pf = g_Physics->createParticleFluid(maxParticles, perParticleResetOffset);
+
+	pf->setRestParticleDistance(0.3f);
+	pf->setDynamicFriction(0.1f);
+	pf->setStaticFriction(0.1f);
+	pf->setDamping(0.1f);
+	pf->setParticleMass(0.1f);
+	pf->setRestitution(0);
+	//pf->setParticleReadDataFlag(PxParticleReadDataFlag::eDENSITY_BUFFER, true);
+	pf->setParticleBaseFlag(PxParticleBaseFlag::eCOLLISION_TWOWAY, true);
+	pf->setStiffness(100);
+
+	if (pf)
+	{
+		g_PhysicsScene->addActor(*pf);
+
+		m_particleEmitter = new ParticleFluidEmitter(maxParticles, PxVec3(0, 10, 0), pf, 0.1f);
+		m_particleEmitter->setStartVelocityRange(-0.001f, -250.0f, -0.001f, 0.001f, 250.0f, 0.001f);
+	}
+}
+
+glm::vec3 PhysXApp::Vec3PhysXToGLM(PxVec3 &_vec)
+{
+	glm::vec3 vector;
+	
+	vector.x = _vec.x;
+	vector.y = _vec.y;
+	vector.z = _vec.z;
+
+	return vector;
+}
+
+PxVec3 PhysXApp::Vec3GLMToPhysX(glm::vec3 &_vec)
+{
+	PxVec3 vector;
+
+	vector.x = _vec.x;
+	vector.y = _vec.y;
+	vector.z = _vec.z;
+
+	return vector;
+}
+
 //---------- PhysXApp ENDS ----------
 
 //---------- MyControllerHitReport STARTS ----------
-void MyControllerHitReport::OnShapeHit(const PxControllerShapeHit &_hit)
+void ControllerHitReport::onShapeHit(const PxControllerShapeHit &_hit)
 {
 	PxRigidActor* actor = _hit.shape->getActor();
 

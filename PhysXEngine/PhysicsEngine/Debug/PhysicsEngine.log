@@ -1,12 +1,24 @@
-﻿Build started 30/07/2015 11:14:13 AM.
-     1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" on node 3 (Build target(s)).
+﻿Build started 31/07/2015 4:25:42 PM.
+     1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" on node 3 (Rebuild target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glm\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\include\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\PhysicsScene.cpp Source\SpringJoint.cpp Source\TutCollisionDetection.cpp Source\TutNewtonsThirdLaw.cpp
-         TutNewtonsThirdLaw.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glm\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\include\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\App.cpp Source\Box.cpp Source\Camera\Camera.cpp Source\Camera\MobileCamera.cpp Source\PhysicsObject.cpp Source\Plane.cpp Source\RigidBody.cpp Source\Sphere.cpp Source\Giz_core\Gizmos.cpp Source\main.cpp Source\PhysicsScene.cpp Source\SpringJoint.cpp Source\TutNewtonsThirdLaw.cpp Source\TutCollisionDetection.cpp
          TutCollisionDetection.cpp
+         TutNewtonsThirdLaw.cpp
          SpringJoint.cpp
          PhysicsScene.cpp
+         main.cpp
+         Gizmos.cpp
+         Sphere.cpp
+         RigidBody.cpp
+         Plane.cpp
+         PhysicsObject.cpp
+         MobileCamera.cpp
+         Camera.cpp
+         Box.cpp
+         App.cpp
          Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glm\ /IC:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\include\ /ZI /nologo /W3 /WX- /Od /Oy- /D GLM_SWIZZLE /D GLM_FORCE_PURE /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt Source\Giz_core\gl_core_4_4.c
+         gl_core_4_4.c
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\lib-vc2013\\" opengl32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.lib" /MACHINE:X86 Debug\App.obj
          Debug\Box.obj
@@ -25,8 +37,8 @@
          Debug\TutCollisionDetection.obj
      1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
          PhysicsEngine.vcxproj -> C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe
-     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" (Build target(s)).
+     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:09.90
+Time Elapsed 00:00:37.62

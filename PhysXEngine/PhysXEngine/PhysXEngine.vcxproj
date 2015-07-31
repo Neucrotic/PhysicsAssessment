@@ -93,6 +93,8 @@
     <ClCompile Include="Source\Giz_core\Gizmos.cpp" />
     <ClCompile Include="Source\Giz_core\gl_core_4_4.c" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\ParticleEmitter.cpp" />
+    <ClCompile Include="Source\ParticleFluidEmitter.cpp" />
     <ClCompile Include="Source\PhysXApp.cpp" />
     <ClCompile Include="Source\Ragdoll.cpp" />
   </ItemGroup>
@@ -102,6 +104,8 @@
     <ClInclude Include="Source\Camera\MobileCamera.h" />
     <ClInclude Include="Source\Giz_core\Gizmos.h" />
     <ClInclude Include="Source\Giz_core\gl_core_4_4.h" />
+    <ClInclude Include="Source\ParticleEmitter.h" />
+    <ClInclude Include="Source\ParticleFluidEmitter.h" />
     <ClInclude Include="Source\PhysXApp.h" />
     <ClInclude Include="Source\Ragdoll.h" />
     <ClInclude Include="Source\RagdollData.h" />
