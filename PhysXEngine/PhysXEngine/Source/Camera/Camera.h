@@ -9,7 +9,7 @@ public:
 	Camera(glm::vec3 _postion);
 	Camera(glm::mat4 _transform);
 
-	virtual void Update(double _dt) = 0;
+	virtual void Update(double _dt){};
 
 
 	void SetTransform(glm::mat4 _transform);

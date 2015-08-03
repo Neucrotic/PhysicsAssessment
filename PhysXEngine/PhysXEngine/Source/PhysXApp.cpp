@@ -1,14 +1,15 @@
+#include <iostream>
 #include "PhysXApp.h"
 #include "Camera\MobileCamera.h"
 #include "Ragdoll.h"
 #include "RagdollData.h"
 #include "ParticleEmitter.h";
 #include "ParticleFluidEmitter.h";
+#include "PlayerController.h"
 
 void PhysXApp::Startup()
 {
-	MobileCamera* camera = new MobileCamera(50.0f, 0.1f);
-	camera->SetInputWindow(window);
+	Camera* camera = new Camera();
 	camera->SetupPerspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 10000.0f);
 	camera->LookAt(glm::vec3(0, 1, 40), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	m_camera = camera;
@@ -18,8 +19,8 @@ void PhysXApp::Startup()
 
 	//SetupTutorial1();
 	//SetUpTutRagdoll();
-	//SetupTutController();
-	SetupTutFluid();
+	SetupTutController();
+	//SetupTutFluid();
 
 	keyCD = 0.15f;
 }
@@ -33,26 +34,20 @@ void PhysXApp::Shutdown()
 
 bool PhysXApp::Update(double _dt)
 {
-	m_camera->Update(_dt);
-
-	if (m_capsule == NULL)
-	{
-		glm::vec3 lookAtPos;
-		lookAtPos.x = m_capsule->getGlobalPose().p.x;
-		lookAtPos.y = m_capsule->getGlobalPose().p.y;
-		lookAtPos.z = m_capsule->getGlobalPose().p.z;
-
-		m_camera->SetPosition(m_cameraPos + m_camOffset);
-		m_camera->LookAt(lookAtPos, glm::vec3(0, 1, 0));
-	}
-
 	UpdatePhysX(_dt);
+	
+	m_camera->Update(_dt);	
+	m_player->MovePlayerController(_dt);
+
+	m_camera->SetTransform(m_player->GetTransform());
+	//m_camera->SetPosition(m_player->GetPosition());
+	//m_camera->LookAt(lookAtPos, glm::vec3(0, 1, 0));
 
 	//updating particles
-	if (m_particleEmitter)
-	{
-		m_particleEmitter->update(_dt);
-	}
+	//if (m_particleEmitter)
+	//{
+	//	m_particleEmitter->update(_dt);
+	//}
 
 	if (keyCD <= 0)
 	{
@@ -64,7 +59,6 @@ bool PhysXApp::Update(double _dt)
 		keyCD = 0.15f;
 	}
 
-
 	keyCD -= _dt;
 
 	return true;
@@ -75,10 +69,10 @@ void PhysXApp::Render()
 	Gizmos::addTransform(glm::mat4(1));
 
 	//rendering particles
-	if (m_particleEmitter)
-	{
-		m_particleEmitter->renderParticles();
-	}
+	//if (m_particleEmitter)
+	//{
+	//	m_particleEmitter->renderParticles();
+	//}
 }
 
 void PhysXApp::SetUpPhysX()
@@ -93,11 +87,16 @@ void PhysXApp::SetUpPhysX()
 	//create physics material
 	g_PhysicsMaterial = g_Physics->createMaterial(0.5f, 0.5f, 0.5f);
 
+	PxSimulationEventCallback* myCollisionCallback = new myCollisionCallBack();
+	
 	PxSceneDesc sceneDesc(g_Physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0, -10.0f, 0);
 	sceneDesc.filterShader = &PxDefaultSimulationFilterShader;
+	sceneDesc.simulationEventCallback = myCollisionCallback;
 	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
-	g_PhysicsScene = g_Physics-> createScene(sceneDesc);
+	g_PhysicsScene = g_Physics->createScene(sceneDesc);
+
+	
 }
 
 void PhysXApp::UpdatePhysX(double _dt)
@@ -336,45 +335,6 @@ void PhysXApp::FireSphere(glm::mat4 _camTrans)
 	newSphere->setLinearVelocity(velocity, true);
 }
 
-void PhysXApp::MovePlayerController(double _dt)
-{
-	const PxVec3 up(0, 1, 0);
-	bool onGround;
-	float movementSpeed = 10.0f;
-	float rotationSpeed = 1.0f;
-	float minDistance = 0.001f;
-
-	if (m_myHitReport->GetPlayerContactNormal().y > 0.3f)
-	{
-		m_characterYVelocity = -0.1f;
-		onGround = true;
-	}
-	else
-	{
-		m_characterYVelocity += -10 * _dt;
-		onGround = false;
-	}
-
-	m_myHitReport->ClearPlayerContactNormal();
-	PxVec3 velocity(0, m_characterYVelocity, 0);
-
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		velocity.x -= movementSpeed * _dt;
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		velocity.x += movementSpeed * _dt;
-	}
-
-	PxControllerFilters filter;
-
-	PxQuat rotation(m_characterRotation, PxVec3(0, 1, 0));
-	//velocity = PxVec3(0, m_characterYVelocity, 0);
-	//make contorller move
-
-}
-
 //TUTORIALS
 void PhysXApp::SetupTutorial1()
 {
@@ -425,44 +385,20 @@ void PhysXApp::SetUpTutRagdoll()
 void PhysXApp::SetupTutController()
 {
 	//add a plane
-	PxTransform pose = PxTransform(PxVec3(0.0f, -4, 0.0f), physx::PxQuat(PxHalfPi * 1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
+	PxTransform pose = PxTransform(PxVec3(0.0f, 0, 0.0f), physx::PxQuat(PxHalfPi * 1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
 	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
 	//add the plane to the scene
 	g_PhysicsScene->addActor(*plane);
-
-	PxCapsuleGeometry capsule(2, 4);
-	PxTransform capsuleTrans(PxVec3(0, 5, 0), PxQuat(PxPi / 2.0f, PxVec3(0, 0, 1.0f)));
-	m_capsule = PxCreateDynamic(*g_Physics, capsuleTrans, capsule, *g_PhysicsMaterial, 10);
-
-	g_PhysicsScene->addActor(*m_capsule);
-	m_physxActors.push_back(m_capsule);
-
-	m_camOffset = glm::vec3(0, 6, 30);
 	
-	//converting form physX to GLM
-	m_cameraPos = Vec3PhysXToGLM(capsuleTrans.p);
-	m_camera->SetPosition(m_cameraPos + m_camOffset);
+	//PxCapsuleGeometry capsule(2, 4);
+	//PxTransform capsuleTrans(PxVec3(0, 10, 0), PxQuat(PxPi / 2.0f, PxVec3(0, 0, 1.0f)));
+	//m_capsule = PxCreateDynamic(*g_Physics, capsuleTrans, capsule, *g_PhysicsMaterial, 10);
 
-	m_myHitReport = new ControllerHitReport();
-	PxControllerManager* characterManager = PxCreateControllerManager(*g_PhysicsScene);
-	PxCapsuleControllerDesc desc;
-	desc.height = 1.6f;
-	desc.radius = 0.4f;
-	desc.position.set(0, 0, 0);
-	desc.material = g_PhysicsMaterial;
-	desc.reportCallback = m_myHitReport; //this connects it to collsion detection routine
-	desc.density = 10;
+	//m_capsule->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+	//g_PhysicsScene->addActor(*m_capsule);
+	//m_physxActors.push_back(m_capsule);
 
-	m_playerController = characterManager->createController(desc);
-	m_playerController->setPosition(PxExtendedVec3(0, 0, 0));
-
-	//initialise character related member variables
-	m_characterYVelocity = 0;
-	m_characterRotation = 0;
-	m_playerGravity = -5.0f;
-
-	m_myHitReport->ClearPlayerContactNormal();
-	//g_PhysicsScene->addActor(m_playerController->getActor());
+	m_player = new PlayerController(g_PhysicsScene, g_PhysicsMaterial, window);
 }
 
 void PhysXApp::SetupTutFluid()
@@ -547,15 +483,39 @@ PxVec3 PhysXApp::Vec3GLMToPhysX(glm::vec3 &_vec)
 //---------- PhysXApp ENDS ----------
 
 //---------- MyControllerHitReport STARTS ----------
-void ControllerHitReport::onShapeHit(const PxControllerShapeHit &_hit)
+
+void myCollisionCallBack::onContact(const PxContactPairHeader& _pairHeader, const PxContactPair* _pairs, PxU32 _numPairs)
 {
-	PxRigidActor* actor = _hit.shape->getActor();
-
-	m_playerContactNormal = _hit.worldNormal;
-
-	PxRigidDynamic* myActor = actor->is<PxRigidDynamic>();
-	if (myActor != NULL)
+	for (PxU32 i = 0; i < _numPairs; i++)
 	{
-		
+		const PxContactPair& cp = _pairs[i];
+
+		//only interested in touches found and lost
+		if (cp.events & PxPairFlag::eNOTIFY_TOUCH_FOUND)
+		{
+			std::cout << "Collision Detection between: ";
+			std::cout << _pairHeader.actors[0]->getName();
+			std::cout << _pairHeader.actors[1]->getName() << endl;
+		}
 	}
+}
+
+void myCollisionCallBack::onTrigger(PxTriggerPair* _pairs, PxU32 _numPairs)
+{
+	for (PxU32 i = 0; i < _numPairs; i++)
+	{
+		PxTriggerPair* pair = _pairs + i;
+		PxActor* triggerActor = pair->triggerActor;
+		PxActor* otherActor = pair->otherActor;
+		
+		std::cout << otherActor->getName();
+		std::cout << " Entered Trigger ";
+		std::cout << triggerActor->getName() << endl;
+	}
+}
+
+PxFilterFlags myFilterShader(PxFilterObjectAttributes _attributes0, PxFilterData _filterData0, PxFilterObjectAttributes _attributes1, PxFilterData _filterData1, PxPairFlags& _pairFlags, const void* _constantBlock, PxU32 _constantBlockSize)
+{
+	//let triggers through
+	//if (PxFilterObjectIsTrigger);
 }

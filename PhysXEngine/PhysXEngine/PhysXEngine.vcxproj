@@ -96,6 +96,7 @@
     <ClCompile Include="Source\ParticleEmitter.cpp" />
     <ClCompile Include="Source\ParticleFluidEmitter.cpp" />
     <ClCompile Include="Source\PhysXApp.cpp" />
+    <ClCompile Include="Source\PlayerController.cpp" />
     <ClCompile Include="Source\Ragdoll.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -107,6 +108,7 @@
     <ClInclude Include="Source\ParticleEmitter.h" />
     <ClInclude Include="Source\ParticleFluidEmitter.h" />
     <ClInclude Include="Source\PhysXApp.h" />
+    <ClInclude Include="Source\PlayerController.h" />
     <ClInclude Include="Source\Ragdoll.h" />
     <ClInclude Include="Source\RagdollData.h" />
   </ItemGroup>

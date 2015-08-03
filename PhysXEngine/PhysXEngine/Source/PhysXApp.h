@@ -7,8 +7,8 @@
 
 using namespace physx;
 
-class ControllerHitReport;
 class ParticleFluidEmitter;
+class PlayerController;
 
 class PhysXApp : public App
 {
@@ -43,15 +43,10 @@ private:
 	ParticleFluidEmitter* m_particleEmitter;
 
 	//values for camera followX
+	PlayerController* m_player;
 	PxRigidDynamic* m_capsule;
 	glm::vec3 m_cameraPos;
 	glm::vec3 m_camOffset;
-	//and object follow
-	PxController* m_playerController;
-	ControllerHitReport* m_myHitReport;
-	float m_characterYVelocity;
-	float m_characterRotation;
-	float m_playerGravity;
 
 	//PhysX Functions
 	void SetUpPhysX();
@@ -67,7 +62,6 @@ private:
 
 	//'game physics'
 	void FireSphere(glm::mat4 _camTrans);
-	void MovePlayerController(double _dt);
 
 	//tutorial setup functions
 	void SetupTutorial1();
@@ -96,19 +90,11 @@ public:
 	}
 };
 
-class ControllerHitReport : public PxUserControllerHitReport
+class myCollisionCallBack : public PxSimulationEventCallback
 {
-public:
-	ControllerHitReport() : PxUserControllerHitReport(){};
-
-	PxVec3 m_playerContactNormal;
-
-	void onShapeHit(const PxControllerShapeHit &_hit) override;
-
-	PxVec3 GetPlayerContactNormal() { return m_playerContactNormal; }
-	void ClearPlayerContactNormal() { m_playerContactNormal = PxVec3(0, 0, 0); }
-
-	//functions NEED to be overloaded, not needed
-	virtual void onControllerHit(const PxControllersHit &_hit) override {}
-	virtual void onObstacleHit(const PxControllerObstacleHit &_hit) override {};
+	virtual void onContact(const PxContactPairHeader& _pairHeader, const PxContactPair* _pairs, PxU32 _numPairs) override;
+	virtual void onTrigger(PxTriggerPair* _pairs, PxU32 _numPairs) override;
+	virtual void onConstraintBreak(PxConstraintInfo*, PxU32) override {};
+	virtual void onWake(PxActor**, PxU32) override {};
+	virtual void onSleep(PxActor**, PxU32) override {};
 };
