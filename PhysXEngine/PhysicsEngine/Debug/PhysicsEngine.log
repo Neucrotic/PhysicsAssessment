@@ -1,25 +1,18 @@
-﻿Build started 3/08/2015 2:39:01 PM.
-     1>Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" on node 3 (Build target(s)).
-     1>Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\Dep\glfw\lib-vc2013\\" opengl32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.lib" /MACHINE:X86 Debug\App.obj
-         Debug\Box.obj
-         Debug\Camera.obj
-         Debug\MobileCamera.obj
-         Debug\PhysicsObject.obj
-         Debug\Plane.obj
-         Debug\RigidBody.obj
-         Debug\Sphere.obj
-         Debug\Gizmos.obj
-         Debug\gl_core_4_4.obj
-         Debug\main.obj
-         Debug\PhysicsScene.obj
-         Debug\SpringJoint.obj
-         Debug\TutNewtonsThirdLaw.obj
-         Debug\TutCollisionDetection.obj
-     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-         PhysicsEngine.vcxproj -> C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe
-     1>Done Building Project "C:\Users\nelson.hain\Documents\PhysicsAssessment\PhysXEngine\PhysicsEngine\PhysicsEngine.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:00.45
+﻿  TutCollisionDetection.cpp
+  TutNewtonsThirdLaw.cpp
+  SpringJoint.cpp
+  PhysicsScene.cpp
+  main.cpp
+  Gizmos.cpp
+  Sphere.cpp
+  RigidBody.cpp
+  Plane.cpp
+  PhysicsObject.cpp
+  MobileCamera.cpp
+  Camera.cpp
+  Box.cpp
+  App.cpp
+  Generating Code...
+  gl_core_4_4.c
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  PhysicsEngine.vcxproj -> C:\Users\Nelson Hain\Documents\PhysicsAssessment\PhysXEngine\Debug\PhysicsEngin.exe

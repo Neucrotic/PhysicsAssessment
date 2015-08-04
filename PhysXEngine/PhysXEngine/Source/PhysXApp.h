@@ -10,6 +10,16 @@ using namespace physx;
 class ParticleFluidEmitter;
 class PlayerController;
 
+struct FilterGroup
+{
+	enum Enum
+	{
+		ePLAYER = (1 << 0),
+		ePLATFORM = (1 << 1),
+		eGROUND = (1 << 2)
+	};
+};
+
 class PhysXApp : public App
 {
 public:
@@ -52,6 +62,10 @@ private:
 	void SetUpPhysX();
 	void UpdatePhysX(double _dt);
 	void SetUpVisualDebugger();
+
+	//Trigger helper functions
+	void SetUpFiltering(PxRigidActor* _actor, PxU32 _filterGroup, PxU32 _filterMask);
+	void SetShapeAsTrigger(PxRigidActor* _actor);
 
 	//rendering gizmos
 	void AddWidget(PxShape* _shape, PxRigidActor* _actor);

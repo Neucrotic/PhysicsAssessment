@@ -7,6 +7,29 @@
 #include "ParticleFluidEmitter.h";
 #include "PlayerController.h"
 
+PxFilterFlags myFilterShader(PxFilterObjectAttributes _attributes0, PxFilterData _filterData0, PxFilterObjectAttributes _attributes1, PxFilterData _filterData1, PxPairFlags& _pairFlags, const void* _constantBlock, PxU32 _constantBlockSize)
+{
+	//let triggers through
+	if (PxFilterObjectIsTrigger(_attributes0) || PxFilterObjectIsTrigger(_attributes1))
+	{
+		_pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+
+		return PxFilterFlag::eDEFAULT;
+	}
+
+	//generate contacts for all that were not filtered above
+	_pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+	//trigger the contact callback for pair (A,B) 
+	//where the filtermask of A contains the ID of B and vice versa
+	if ((_filterData0.word0 & _filterData1.word1) && (_filterData1.word0 & _filterData0.word1))
+	{
+		_pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST;
+	}
+
+	return PxFilterFlag::eDEFAULT;
+}
+
 void PhysXApp::Startup()
 {
 	Camera* camera = new Camera();
@@ -91,7 +114,7 @@ void PhysXApp::SetUpPhysX()
 	
 	PxSceneDesc sceneDesc(g_Physics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0, -10.0f, 0);
-	sceneDesc.filterShader = &PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = &myFilterShader;
 	sceneDesc.simulationEventCallback = myCollisionCallback;
 	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
 	g_PhysicsScene = g_Physics->createScene(sceneDesc);
@@ -147,6 +170,43 @@ void PhysXApp::SetUpVisualDebugger()
 
 	//trying to connect PxVisualDebuggerExt
 	auto theConnection = PxVisualDebuggerExt::createConnection(g_Physics->getPvdConnectionManager(), pvd_host_ip, port, timeout, connectionFlags);
+}
+
+void PhysXApp::SetUpFiltering(PxRigidActor* _actor, PxU32 _filterGroup, PxU32 _filterMask)
+{
+	PxFilterData filterData;
+	filterData.word0 = _filterGroup; // word0 = own ID
+	filterData.word1 = _filterMask; // word1 = ID mask to filter pairs that trigger a contact callback
+
+	const PxU32 numShapes = _actor->getNbShapes();
+	PxShape** shapes = (PxShape**)_aligned_malloc(sizeof(PxShape*) * numShapes, 16);
+
+	_actor->getShapes(shapes, numShapes);
+
+	for (PxU32 i = 0; i < numShapes; i++)
+	{
+		PxShape* shape = shapes[i];
+		shape->setSimulationFilterData(filterData);
+	}
+
+	_aligned_free(shapes);
+}
+
+void PhysXApp::SetShapeAsTrigger(PxRigidActor* _actor)
+{
+	PxRigidStatic* staticActor = _actor->is<PxRigidStatic>();
+	assert(staticActor);
+
+	const PxU32 numShapes = staticActor->getNbShapes();
+
+	PxShape** shapes = (PxShape**)_aligned_malloc(sizeof(PxShape*) * numShapes, 16);
+	staticActor->getShapes(shapes, numShapes);
+
+	for (PxU32 i = 0; i < numShapes; i++)
+	{
+		shapes[i]->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
+		shapes[i]->setFlag(PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
 }
 
 void PhysXApp::AddWidget(PxShape* _shape, PxRigidActor* _actor)
@@ -389,6 +449,13 @@ void PhysXApp::SetupTutController()
 	PxRigidStatic* plane = PxCreateStatic(*g_Physics, pose, PxPlaneGeometry(), *g_PhysicsMaterial);
 	//add the plane to the scene
 	g_PhysicsScene->addActor(*plane);
+
+	//add a box for the trigger
+	PxBoxGeometry box(2, 2, 2);
+	PxTransform transform(PxVec3(0, 5, 0));
+	PxRigidDynamic* dynamicActorBox = PxCreateDynamic(*g_Physics, transform, box, *g_PhysicsMaterial, 10);
+	g_PhysicsScene->addActor(*dynamicActorBox);
+	m_physxActors.push_back(dynamicActorBox);
 	
 	//PxCapsuleGeometry capsule(2, 4);
 	//PxTransform capsuleTrans(PxVec3(0, 10, 0), PxQuat(PxPi / 2.0f, PxVec3(0, 0, 1.0f)));
@@ -399,6 +466,9 @@ void PhysXApp::SetupTutController()
 	//m_physxActors.push_back(m_capsule);
 
 	m_player = new PlayerController(g_PhysicsScene, g_PhysicsMaterial, window);
+
+	//setting up triggers
+	SetShapeAsTrigger(dynamicActorBox);
 }
 
 void PhysXApp::SetupTutFluid()
@@ -430,38 +500,38 @@ void PhysXApp::SetupTutFluid()
 	pose = PxTransform(PxVec3(-4.0f, 0.5f, 0.0f));
 	box = PxCreateStatic(*g_Physics, pose, side2, *g_PhysicsMaterial);
 	g_PhysicsScene->addActor(*box);
-	m_physxActors.push_back(box);
+m_physxActors.push_back(box);
 #pragma endregion
 
-	PxParticleFluid* pf;
+PxParticleFluid* pf;
 
-	PxU32 maxParticles = 2000;
-	bool perParticleResetOffset = false;
-	pf = g_Physics->createParticleFluid(maxParticles, perParticleResetOffset);
+PxU32 maxParticles = 2000;
+bool perParticleResetOffset = false;
+pf = g_Physics->createParticleFluid(maxParticles, perParticleResetOffset);
 
-	pf->setRestParticleDistance(0.3f);
-	pf->setDynamicFriction(0.1f);
-	pf->setStaticFriction(0.1f);
-	pf->setDamping(0.1f);
-	pf->setParticleMass(0.1f);
-	pf->setRestitution(0);
-	//pf->setParticleReadDataFlag(PxParticleReadDataFlag::eDENSITY_BUFFER, true);
-	pf->setParticleBaseFlag(PxParticleBaseFlag::eCOLLISION_TWOWAY, true);
-	pf->setStiffness(100);
+pf->setRestParticleDistance(0.3f);
+pf->setDynamicFriction(0.1f);
+pf->setStaticFriction(0.1f);
+pf->setDamping(0.1f);
+pf->setParticleMass(0.1f);
+pf->setRestitution(0);
+//pf->setParticleReadDataFlag(PxParticleReadDataFlag::eDENSITY_BUFFER, true);
+pf->setParticleBaseFlag(PxParticleBaseFlag::eCOLLISION_TWOWAY, true);
+pf->setStiffness(100);
 
-	if (pf)
-	{
-		g_PhysicsScene->addActor(*pf);
+if (pf)
+{
+	g_PhysicsScene->addActor(*pf);
 
-		m_particleEmitter = new ParticleFluidEmitter(maxParticles, PxVec3(0, 10, 0), pf, 0.1f);
-		m_particleEmitter->setStartVelocityRange(-0.001f, -250.0f, -0.001f, 0.001f, 250.0f, 0.001f);
-	}
+	m_particleEmitter = new ParticleFluidEmitter(maxParticles, PxVec3(0, 10, 0), pf, 0.1f);
+	m_particleEmitter->setStartVelocityRange(-0.001f, -250.0f, -0.001f, 0.001f, 250.0f, 0.001f);
+}
 }
 
 glm::vec3 PhysXApp::Vec3PhysXToGLM(PxVec3 &_vec)
 {
 	glm::vec3 vector;
-	
+
 	vector.x = _vec.x;
 	vector.y = _vec.y;
 	vector.z = _vec.z;
@@ -507,15 +577,9 @@ void myCollisionCallBack::onTrigger(PxTriggerPair* _pairs, PxU32 _numPairs)
 		PxTriggerPair* pair = _pairs + i;
 		PxActor* triggerActor = pair->triggerActor;
 		PxActor* otherActor = pair->otherActor;
-		
+
 		std::cout << otherActor->getName();
 		std::cout << " Entered Trigger ";
 		std::cout << triggerActor->getName() << endl;
 	}
-}
-
-PxFilterFlags myFilterShader(PxFilterObjectAttributes _attributes0, PxFilterData _filterData0, PxFilterObjectAttributes _attributes1, PxFilterData _filterData1, PxPairFlags& _pairFlags, const void* _constantBlock, PxU32 _constantBlockSize)
-{
-	//let triggers through
-	//if (PxFilterObjectIsTrigger);
 }

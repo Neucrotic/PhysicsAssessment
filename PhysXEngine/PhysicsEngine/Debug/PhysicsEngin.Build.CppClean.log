@@ -18,9 +18,29 @@ c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug
 c:\users\nelson.hain\documents\physicsassessment\physxengine\debug\physicsengin.ilk
 c:\users\nelson.hain\documents\physicsassessment\physxengine\debug\physicsengin.exe
 c:\users\nelson.hain\documents\physicsassessment\physxengine\debug\physicsengin.pdb
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.command.1.tlog
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.read.1.tlog
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.write.1.tlog
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.command.1.tlog
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.read.1.tlog
-c:\users\nelson.hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.write.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\app.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\box.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\camera.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\gizmos.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\gl_core_4_4.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\main.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\mobilecamera.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsobject.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsscene.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\plane.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\rigidbody.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\sphere.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\springjoint.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\tutcollisiondetection.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\tutnewtonsthirdlaw.obj
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\vc120.idb
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\vc120.pdb
+c:\users\nelson hain\documents\physicsassessment\physxengine\debug\physicsengin.pdb
+c:\users\nelson hain\documents\physicsassessment\physxengine\debug\physicsengin.exe
+c:\users\nelson hain\documents\physicsassessment\physxengine\debug\physicsengin.ilk
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.command.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.read.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\cl.write.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.command.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.read.1.tlog
+c:\users\nelson hain\documents\physicsassessment\physxengine\physicsengine\debug\physicsengin.tlog\link.write.1.tlog
